@@ -1,8 +1,17 @@
 import numpy as np
 
 class PCA:
-  def __init__(self, number_of_axis = 0):
+  def __init__(self, n_components = None):
     pass
 
-  def _calculate_pca():
+  def fit(self, X):
+    pass
+  
+  def transform(self, X):
+    pass
+  
+  def fit_transform(self, X):
+    pass
+  
+  def inverse_transform(self, Z):
     pass
