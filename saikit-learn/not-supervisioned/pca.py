@@ -18,13 +18,13 @@ class PCA:
     S = (Xc.T @ Xc) / N  
     
     # Calcula os autovalores e autovetores da matriz de covariância por meio da função np.linalg.eigh.
-    eigh_values, eigh_vectors = np.linalg.eigh(S)
+    eigen_values, eigen_vectors = np.linalg.eigh(S)
     
     # Reordena os autovalores em ordem decrescente (pois a função np.linalg.eigh retorna, por padrão,
     # os autovalores em ordem crescente) e ordena também os autovetores correspondentes a eles
-    order = np.argsort(eigh_values)[::-1]
-    eigh_values = np.clip(eigh_values[order], 0.0, None)  # garante que todos os autovalores são maiores ou iguais a 0
-    eigh_vectors = eigh_vectors[:, order]
+    order = np.argsort(eigen_values)[::-1]
+    eigen_values = np.clip(eigen_values[order], 0.0, None)  # garante que todos os autovalores são maiores ou iguais a 0
+    eigen_vectors = eigen_vectors[:, order]
     
     
     
