@@ -6,13 +6,21 @@ class PCA:
   
 
   def fit(self, X):
-    X = np.asarray(X, dtype=float)  # converte os dados de entrada em um array NumPy
-    N, D = X.shape  # resgata o número de amostras e o número de variáveis
-     
-    self.mean_ = X.mean(axis=0)  # calcula a média das amostras
-    Xc = X - self.mean_  # centraliza X em relação à média
+    # converte os dados de entrada em um array NumPy e resgata o número de amostras e o número de variáveis
+    X = np.asarray(X, dtype=float)
+    N, D = X.shape  
     
-    S = (Xc.T @ Xc) / N  # constrói a matriz de covariâncias
+    # Calcula a média das amostras e centraliza X em relação a essa média 
+    self.mean_ = X.mean(axis=0)  
+    Xc = X - self.mean_  
+    
+    # Constrói a matriz de covariâncias
+    S = (Xc.T @ Xc) / N  
+    
+     
+    
+    
+    
     return 
   
   def transform(self, X):
