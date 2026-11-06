@@ -13,15 +13,23 @@ class PCA:
     # Transforma a fonte dos dados em um array NumPy e resgata o número de amostras e o núumero de features
     X = np.asarray(X, dtype=float)
     N, D = X.shape
-    
-    # Se n_components não for especificado, mantém todas as D dimensões originais
-    if self.n_components is None:
-      self.n_components = D
-    
+     
     # Centraliza os dados em relação à média das amostras
     self.mean_ = np.mean(X, axis=0)
     X_centered = X - self.mean_
     
+    # Constrói matriz de covariância S = (1/N) * X_centerd^T * X_centered
+    S = np.cov(X_centered, rowvar=False, bias=True)
+    
+    # Autodecomposição da matriz S (Usamos eigh pois S é simétrica e semidefinida positiva)
+    eigen_values, eigen_vectors = np.linalg.eigh(S)
+    
+    # Reordena os autovalores em ordem decrescente
+    order = np.argsort(eigen_values)[::-1]
+    eigen_values = eigen_values[order]
+    eigen_vectors = eigen_vectors[:, order]
+    
+     
     pass
   
   def transform(self, X):
