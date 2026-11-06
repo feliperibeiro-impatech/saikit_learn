@@ -4,7 +4,6 @@ class PCA:
   def __init__(self, n_components = None):
     self.n_components = n_components
     self.mean_ = None
-    self.n_components = None
     self.eigenvalues_ = None
     self.explained_variance_ratio_ = None
 
@@ -28,7 +27,6 @@ class PCA:
     order = np.argsort(eigen_values)[::-1]
     eigen_values = eigen_values[order]
     eigen_vectors = eigen_vectors[:, order]
-    
      
     pass
   
