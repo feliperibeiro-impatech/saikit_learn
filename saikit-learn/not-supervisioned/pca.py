@@ -27,7 +27,8 @@ class PCA:
     order = np.argsort(eigen_values)[::-1]
     eigen_values = eigen_values[order]
     eigen_vectors = eigen_vectors[:, order]
-     
+  
+  def resolve_d(self):
     pass
   
   def transform(self, X):
