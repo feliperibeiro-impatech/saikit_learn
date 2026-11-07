@@ -1,5 +1,15 @@
 class PCA:
-  def __init__(self):
+  def __init__(self, n_components=None, proporcao=0.95):
+    self.n_components = n_components
+    self.proporcao = proporcao
+    
+    self.mean_ = None
+    self.n_features_inicial_ = None
+    self.n_components_ = None
+    self.components_ = None
+    self.eigenvalues_ = None
+    self.explained_variance_ = None
+    self.explained_variance_ratio_ = None
     pass
   
   def _valide_matrix():
