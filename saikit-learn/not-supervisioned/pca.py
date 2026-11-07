@@ -1,3 +1,5 @@
+import numpy as np
+
 class PCA:
   def __init__(self, n_components=None, proporcao=0.95):
     self.n_components = n_components
@@ -10,10 +12,21 @@ class PCA:
     self.eigenvalues_ = None
     self.explained_variance_ = None
     self.explained_variance_ratio_ = None
-    pass
   
-  def _valide_matrix():
-    pass
+  @staticmethod
+  def _valide_matrix(X):
+    X = np.asarray(X, dtype=float)
+    
+    if X.ndim != 2:
+      raise ValueError('A entrada deve ser uma matriz bidimensional')
+    
+    if X.shape[0] == 0 or X.shape[1] == 0:
+      raise ValueError('A entrada deve ter pelo menos uma linha e uma coluna')
+    
+    if not np.all(np.isfinite(X)):
+      raise ValueError('A entrada não pode conter NaN ou valores infinitos')
+    
+    return X
   
   def _verify_PCA():
     pass
