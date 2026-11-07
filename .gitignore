@@ -3,9 +3,6 @@ __pycache__/
 *.py[codz]
 *$py.class
 
-# Removendo o testes/test_kmeans.py temporariamente
-testes/test_kmeans.py
-
 # C extensions
 *.so
 
