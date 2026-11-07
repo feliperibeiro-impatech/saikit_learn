@@ -13,7 +13,7 @@ X = np.array([
 
 def test_kmeans_centroids():
   """
-    Teste para verificar se os centroides com n_clusters = 2 está corretos.  
+    Teste para verificar se os centroides com n_clusters = 2 estão corretos.  
   """
   k_means = KMeans(n_clusters = 2)
   k_means.fit(X)
