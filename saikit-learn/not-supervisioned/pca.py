@@ -28,8 +28,9 @@ class PCA:
     
     return X
   
-  def _verify_PCA():
-    pass
+  def _verify_PCA(self):
+    if self.n_components_ is None:
+      raise ValueError('O PCA ainda não foi ajustado. Execute o método fit primeiro')
   
   def resolve_d():
     pass
