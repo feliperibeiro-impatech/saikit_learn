@@ -6,25 +6,28 @@ from numpy.typing import NDArray
 """ ANOTAÇÕES E DUVIDAS -- EM ANDAMENTO - NÃO ESQUECER DE REMOVER AO FINAL
 Não esquecer da DocString!!! Incluir ao final
 Pessoal está implementando em ingles ou portugues?
+Docstring em portugues e funções em ingles e mensagens de erros em portugues  
 
 PRECISO GARANTIR ALGUMAS VALIDAÇÕES DE ENTRADA, COMO MESMO TAMANHO, NÃO VAZIO E ETC!!! ACHO QUE ESSAS
 VALIDAÇÕES DEVEM SE REPETIR PARA AS DEMAIS MÉTRICAS... TALVEZ SEJA INTERESSANTE SEGMENTAR ESSES TESTES 
 
 Avaliar com grupo se coloca o nome completo das metricas ou se deixa abreviado assim 
 
+dados reais (y_true = x (estão sendo chamados assim pelo grupo))
+
 """
 
 
 def MSE(y_true: NDArray[np.float64], y_pred: NDArray[np.float64]) -> float:
     """
-    Calculate the Mean Squared Error (MSE) between true and predicted values.
+    Calcula o erro quadrático médio (MSE) entre os valores reais e os valores previstos.
 
-    Parameters:
-    y_true (NDArray[np.float64]): The true values.
-    y_pred (NDArray[np.float64]): The predicted values.
+    Parametros:
+    y_true (NDArray[np.float64]): Os valores reais.
+    y_pred (NDArray[np.float64]): Os valores previstos.
 
-    Returns:
-    float: The Mean Squared Error.
+    Retorno:
+    float: O erro quadrático médio.
     """
 
     squared_errors = (y_true - y_pred) ** 2
@@ -32,31 +35,30 @@ def MSE(y_true: NDArray[np.float64], y_pred: NDArray[np.float64]) -> float:
 
 def RMSE(y_true: NDArray[np.float64], y_pred: NDArray[np.float64]) -> float:
     """
-    Calculate the Root Mean Squared Error (RMSE) between true and predicted values.
+    Calcula o erro quadrático médio da raiz (RMSE) entre os valores reais e os valores previstos.
 
-    Parameters:
-    y_true (NDArray[np.float64]): The true values.
-    y_pred (NDArray[np.float64]): The predicted values.
+    Parametros:
+    y_true (NDArray[np.float64]): Os valores reais.
+    y_pred (NDArray[np.float64]): Os valores previstos.
 
-    Returns:
-    float: The Root Mean Squared Error.
+    Retorno:
+    float: O erro quadrático médio da raiz.
     """
     return np.sqrt(MSE(y_true, y_pred))
 
 def MAE(y_true: NDArray[np.float64], y_pred: NDArray[np.float64]) -> float:
     """
-    Calculate the Mean Absolute Error (MAE) between true and predicted values.
+    Calcula o erro absoluto médio (MAE) entre os valores reais e os valores previstos.
 
-    Parameters:
-    y_true (NDArray[np.float64]): The true values.
-    y_pred (NDArray[np.float64]): The predicted values.
+    Parametros:
+    y_true (NDArray[np.float64]): Os valores reais.
+    y_pred (NDArray[np.float64]): Os valores previstos.
 
-    Returns:
-    float: The Mean Absolute Error.
+    Retorno:
+    float: O erro absoluto médio.
     """
     absolute_errors = np.abs(y_true - y_pred)
     return float(np.mean(absolute_errors))
-#### PRECISA TESTAR FUNCIONAMENTO E PYTEST!! 
 
 def RSS(): #DAVI
     pass
