@@ -6,7 +6,7 @@ import pytest
 
 # Dados lineares sem ruído, Y = 2*x1 - 3x*2 + 1, com featurres em escala similar.
 @pytest.fixture
-def dados_linares():
+def dados_lineares():
     rng = np.random.default_rng(0)
     X = rng.normal(0, 1, size=(100,2))
     Y = 2 * X[:, 0] - 3 * X[:, 1] + 1
@@ -143,3 +143,130 @@ def test_backward_gradiente_numerico(hidden, seed):
                 p[idx] = original
                 numerico = (mais - menos) / (2 * eps)
                 assert np.isclose(g[idx], numerico, rtol=1e-4, atol=1e-7)
+
+# TESTES DO FIT
+
+# # Testa que a perda final é menor que a inicial.
+def test_fit_perda_diminui(dados_pequenos):
+    X, Y = dados_pequenos
+    modelo = MLPRegressor(hidden_layers=(16,), learning_rate=0.05, n_epochs=2000, random_state=0)
+    modelo.fit(X, Y)
+    assert modelo._loss_history[-1] < modelo._loss_history[0]
+
+
+# Testa que a rede ajusta bem poucos pontos (overfit), reduzindo a perda a menos de 10% da inicial.
+def test_fit_overfit_em_poucos_dados(dados_pequenos):
+    X, Y = dados_pequenos
+    modelo = MLPRegressor(hidden_layers=(16,), learning_rate=0.05, n_epochs=3000, random_state=0)
+    modelo.fit(X, Y)
+    assert modelo._loss_history[-1] < 0.1 * modelo._loss_history[0]
+
+
+# Testa que sem camada oculta o modelo recupera a reta Y = 2*x1 - 3*x2 + 1.
+def test_fit_regressao_linear(dados_lineares):
+    X, Y = dados_lineares
+    modelo = MLPRegressor(hidden_layers=(), learning_rate=0.1, n_epochs=2000, random_state=0)
+    modelo.fit(X, Y)
+    assert np.allclose(modelo.predict(X), Y, atol=1e-2)
+
+
+# Testa que uma rede com camada oculta aprende a mesma relação linear com erro pequeno.
+def test_fit_rede_com_camada_oculta_em_dados_lineares(dados_lineares):
+    X, Y = dados_lineares
+    modelo = MLPRegressor(hidden_layers=(8,), learning_rate=0.05, n_epochs=3000, random_state=0)
+    modelo.fit(X, Y)
+    assert np.mean((modelo.predict(X) - Y) ** 2) < 0.05
+
+
+# FIT: ESTADO E REPRODUTIBILIDADE
+
+# Testa que o fit devolve o próprio objeto, permitindo encadear chamadas.
+def test_fit_retorna_self(dados_lineares):
+    X, Y = dados_lineares
+    modelo = MLPRegressor(n_epochs=5, random_state=0)
+    assert modelo.fit(X, Y) is modelo
+
+
+# Testa que o mesmo random_state produz previsões idênticas.
+def test_fit_reprodutivel_com_random_state(dados_lineares):
+    X, Y = dados_lineares
+    p1 = MLPRegressor(n_epochs=50, random_state=3).fit(X, Y).predict(X)
+    p2 = MLPRegressor(n_epochs=50, random_state=3).fit(X, Y).predict(X)
+    assert np.array_equal(p1, p2)
+
+
+# Testa que a perda é registrada uma vez por época.
+def test_fit_historico_de_perda_tem_n_epochs(dados_lineares):
+    X, Y = dados_lineares
+    modelo = MLPRegressor(n_epochs=30, random_state=0).fit(X, Y)
+    assert len(modelo._loss_history) == 30
+
+
+# Testa que um segundo fit recria os parâmetros em vez de reaproveitar os do primeiro, inclusive com outro número de features.
+def test_refit_recria_parametros(dados_lineares):
+    X, Y = dados_lineares
+    modelo = MLPRegressor(n_epochs=10, random_state=0).fit(X, Y)
+    modelo.fit(X[:, :1], Y)
+    assert modelo._weights[0].shape[0] == 1
+    assert len(modelo._loss_history) == 10
+
+
+# Testa que o fit aceita listas do Python e arrays do NumPy com resultados idênticos.
+def test_fit_nao_aceita_lista(dados_lineares):
+    X, Y = dados_lineares
+    with pytest.raises(TypeError):
+        p_lista = MLPRegressor(n_epochs=20, random_state=0).fit(X.tolist(), Y.tolist()).predict(X.tolist())
+
+# FIT: VALIDAÇÕES DE ENTRADA
+
+# Testa que o fit rejeita X que não é matriz 2D.
+def test_fit_com_X_nao_2d():
+    with pytest.raises(ValueError):
+        MLPRegressor().fit(np.array([1, 2, 3]), np.array([1, 2, 3]))
+
+
+# Testa que o fit rejeita Y que não é vetor 1D.
+def test_fit_com_Y_nao_1d(dados_lineares):
+    X, Y = dados_lineares
+    with pytest.raises(ValueError):
+        MLPRegressor().fit(X, Y.reshape(-1, 1))
+
+
+# Testa que o fit rejeita X e Y com números de amostras diferentes.
+def test_fit_com_tamanhos_incompativeis(dados_lineares):
+    X, Y = dados_lineares
+    with pytest.raises(ValueError):
+        MLPRegressor().fit(X, Y[:-1])
+
+
+# Testa que o fit rejeita NaN e infinito em X e em Y.
+@pytest.mark.parametrize("valor", [np.nan, np.inf, -np.inf])
+@pytest.mark.parametrize("onde", ["X", "Y"])
+def test_fit_com_valores_nao_finitos(dados_lineares, valor, onde):
+    X, Y = dados_lineares
+    X, Y = X.copy(), Y.copy()
+    if onde == "X":
+        X[0, 0] = valor
+    else:
+        Y[0] = valor
+    with pytest.raises(ValueError):
+        MLPRegressor().fit(X, Y)
+
+
+# Testa que o fit rejeita X vazio.
+def test_fit_com_X_vazio():
+    with pytest.raises(ValueError):
+        MLPRegressor().fit(np.empty((0, 2)), np.empty(0))
+
+
+# Testa que o fit rejeita Y com rótulos de texto, já que o alvo deve ser numérico.
+def test_fit_com_Y_de_texto():
+    with pytest.raises(TypeError):
+        MLPRegressor().fit(np.array([[1], [2]]), ["a", "b"])
+
+
+# Testa que uma learning_rate absurda faz o fit levantar FloatingPointError em vez de treinar com lixo.
+def test_fit_detecta_divergencia(dados_lineares):
+    X, Y = dados_lineares
+    with pytest.raises(FloatingPointError):
+        MLPRegressor(hidden_layers=(8,), learning_rate=1e6, n_epochs=200, random_state=0).fit(X * 100, Y)
