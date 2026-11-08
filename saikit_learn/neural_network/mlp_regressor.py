@@ -148,6 +148,14 @@ class MLPRegressor:
         return self
 
     def predict(self, X: np.ndarray) -> np.ndarray:
+        """Prediz o valor contínuo de cada amostra.
+
+        Args:
+            X (np.ndarray): Valores a prever, de tamanho (n_samples, n_features).
+
+        Returns:
+            np.ndarray: Valores preditos, de tamanho (n_samples,).
+        """        
         if self._weights is None:
             raise RuntimeError("Chame fit antes de predict.")
 
