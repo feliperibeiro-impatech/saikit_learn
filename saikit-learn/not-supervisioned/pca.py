@@ -105,5 +105,11 @@ class PCA:
     return self.fit(X).transform(X)
   
   
-  def inverse_transform():
-    pass
+  def inverse_transform(self, Z):
+    self._verify_PCA()
+    Z = self._valide_matrix(Z)
+    
+    if Z.shape[1] != self.n_components_:
+      raise ValueError(f'A matriz deve possuir {self.n_components_} colunas')
+    
+    return Z @ self.n_components_.T + self.mean_
