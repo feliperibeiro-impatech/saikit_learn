@@ -32,8 +32,8 @@ def dados_simples():
 # Caso unidimensional: A = {-1, 0, 1} e B = {3, 4, 5}, com covariância agrupada igual a 1.
 @pytest.fixture
 def dados_1d():
-    X = [[-1], [0], [1], [3], [4], [5]]
-    Y = ["A", "A", "A", "B", "B", "B"]
+    X = np.array([[-1], [0], [1], [3], [4], [5]])
+    Y = np.array(["A", "A", "A", "B", "B", "B"])
     return X, Y
 
 
@@ -43,7 +43,7 @@ def dados_1d():
 def test_separa_classes_com_mesma_covariancia(dados_lineares):
     X, Y = dados_lineares
     modelo = LDA().fit(X, Y)
-    previsto = modelo.predict([[0, 0], [6, 0], [-1, 1], [7, -1]])
+    previsto = modelo.predict(np.array([[0, 0], [6, 0], [-1, 1], [7, -1]]))
     assert list(previsto) == ["A", "B", "A", "B"]
 
 
@@ -51,7 +51,7 @@ def test_separa_classes_com_mesma_covariancia(dados_lineares):
 def test_caso_unidimensional_conferido_a_mao(dados_1d):
     X, Y = dados_1d
     modelo = LDA().fit(X, Y)
-    assert list(modelo.predict([[1.5], [2.5], [-10], [10]])) == ["A", "B", "A", "B"]
+    assert list(modelo.predict(np.array([[1.5], [2.5], [-10], [10]]))) == ["A", "B", "A", "B"]
 
 
 # Testa que o modelo acerta as próprias amostras de treino quando as classes estão bem separadas.
@@ -68,7 +68,7 @@ def test_tres_classes():
     X = np.vstack([c + rng.normal(0, 1, size=(30, 2)) for c in centros])
     Y = np.repeat(["A", "B", "C"], 30)
     modelo = LDA().fit(X, Y)
-    previsto = modelo.predict([[0.2, -0.1], [9.8, 0.3], [-0.2, 10.1]])
+    previsto = modelo.predict(np.array([[0.2, -0.1], [9.8, 0.3], [-0.2, 10.1]]))
     assert list(previsto) == ["A", "B", "C"]
 
 
@@ -76,16 +76,16 @@ def test_tres_classes():
 def test_prior_desempata_ponto_equidistante():
     base = np.array([[-1, 0], [1, 0], [0, -1], [0, 1], [0, 0]], dtype=float)
     X = np.vstack([np.vstack([base] * 9), base + 10])
-    Y = ["A"] * 45 + ["B"] * 5
-    assert LDA().fit(X, Y).predict([[5, 5]])[0] == "A"
+    Y = np.array(["A"] * 45 + ["B"] * 5)
+    assert LDA().fit(X, Y).predict(np.array([[5, 5]]))[0] == "A"
 
 
 # Testa o mesmo cenário com a classe majoritária trocada, garantindo que o desempate vem do prior e não da ordem dos rótulos.
 def test_prior_desempata_para_a_outra_classe():
     base = np.array([[-1, 0], [1, 0], [0, -1], [0, 1], [0, 0]], dtype=float)
     X = np.vstack([base, np.vstack([base + 10] * 9)])
-    Y = ["A"] * 5 + ["B"] * 45
-    assert LDA().fit(X, Y).predict([[5, 5]])[0] == "B"
+    Y = np.array(["A"] * 5 + ["B"] * 45)
+    assert LDA().fit(X, Y).predict(np.array([[5, 5]]))[0] == "B"
 
 
 # ESTIMAÇÃO DOS PARÂMETROS
@@ -143,7 +143,7 @@ def test_rotulos_de_tipos_diferentes(dados_lineares, rotulos):
     X, Y_txt = dados_lineares
     r_a, r_b = rotulos
     Y = np.where(Y_txt == "A", r_a, r_b)
-    previsto = LDA().fit(X, Y).predict([[0, 0], [6, 0]])
+    previsto = LDA().fit(X, Y).predict(np.array([[0, 0], [6, 0]]))
     assert list(previsto) == [r_a, r_b]
 
 
@@ -159,7 +159,7 @@ def test_formato_da_saida(dados_simples):
 # Testa que o predict devolve o rótulo original e não o índice da classe.
 def test_predict_devolve_rotulo_e_nao_indice(dados_simples):
     X, Y = dados_simples
-    previsto = LDA().fit(X, Y).predict([[9, 9]])
+    previsto = LDA().fit(X, Y).predict(np.array([[9, 9]]))
     assert previsto[0] == "B"
     assert not isinstance(previsto[0], (int, np.integer))
 
@@ -167,7 +167,7 @@ def test_predict_devolve_rotulo_e_nao_indice(dados_simples):
 # Testa que uma amostra 1D como [2, 2] é aceita e tratada como matriz (1, d).
 def test_predict_com_amostra_1d(dados_simples):
     X, Y = dados_simples
-    previsto = LDA().fit(X, Y).predict([2, 2])
+    previsto = LDA().fit(X, Y).predict(np.array([2, 2]))
     assert previsto.shape == (1,)
     assert previsto[0] == "A"
 
@@ -176,7 +176,7 @@ def test_predict_com_amostra_1d(dados_simples):
 def test_aceita_lista_e_array(dados_simples):
     X, Y = dados_simples
     pred_array = LDA().fit(X, Y).predict(X)
-    pred_lista = LDA().fit(X.tolist(), Y.tolist()).predict(X.tolist())
+    pred_lista = LDA().fit(np.array(X.tolist()), np.array(Y.tolist())).predict(np.array(X.tolist()))
     assert np.array_equal(pred_array, pred_lista)
 
 
@@ -193,7 +193,7 @@ def test_fit_retorna_self(dados_simples):
 def test_ordem_das_amostras_nao_importa(dados_lineares):
     X, Y = dados_lineares
     perm = np.random.default_rng(2).permutation(len(Y))
-    pontos = [[0, 0], [6, 0], [3.5, 1], [2.5, -1]]
+    pontos = np.array([[0, 0], [6, 0], [3.5, 1], [2.5, -1]])
     original = LDA().fit(X, Y).predict(pontos)
     embaralhado = LDA().fit(X[perm], Y[perm]).predict(pontos)
     assert np.array_equal(original, embaralhado)
@@ -218,7 +218,7 @@ def test_refit_descarta_classes_antigas(dados_simples):
 # Testa que predict antes do fit levanta RuntimeError.
 def test_predict_antes_do_fit():
     with pytest.raises(RuntimeError):
-        LDA().predict([[1, 2]])
+        LDA().predict(np.array([[1, 2]]))
 
 
 # Testa que o predict rejeita um número de colunas diferente do usado no fit.
@@ -226,13 +226,13 @@ def test_predict_com_numero_errado_de_colunas(dados_simples):
     X, Y = dados_simples
     modelo = LDA().fit(X, Y)
     with pytest.raises(ValueError):
-        modelo.predict([[1, 2, 3]])
+        modelo.predict(np.array([[1, 2, 3]]))
 
 
 # Testa que o fit rejeita um X que não é matriz 2D.
 def test_fit_com_X_nao_2d():
     with pytest.raises(ValueError):
-        LDA().fit([1, 2, 3, 4], ["A", "A", "B", "B"])
+        LDA().fit(np.array([1, 2, 3, 4]), np.array(["A", "A", "B", "B"]))
 
 
 # Testa que o fit rejeita X e Y com números de amostras diferentes.
@@ -261,16 +261,16 @@ def test_fit_com_nan(dados_simples):
 # Testa que o fit rejeita o caso com tantas amostras quanto classes (ou menos), pois n - K zeraria o denominador.
 def test_fit_com_amostras_insuficientes():
     with pytest.raises(ValueError):
-        LDA().fit([[1, 2], [3, 4]], ["A", "B"])
+        LDA().fit(np.array([[1, 2], [3, 4]]), np.array(["A", "B"]))
 
 
 # CASOS SENSÍVEIS ESPECÍFICOS DO LDA
 
 # Testa que uma classe com uma única amostra é válida no LDA, pois a covariância é agrupada entre as classes.
 def test_classe_com_uma_unica_amostra_e_valida():
-    X = [[1, 2], [2, 3], [3, 1], [9, 9]]
-    Y = ["A", "A", "A", "B"]
-    previsto = LDA().fit(X, Y).predict([[1, 1], [9, 9]])
+    X = np.array([[1, 2], [2, 3], [3, 1], [9, 9]])
+    Y = np.array(["A", "A", "A", "B"])
+    previsto = LDA().fit(X, Y).predict(np.array([[1, 1], [9, 9]]))
     assert list(previsto) == ["A", "B"]
 
 
@@ -279,9 +279,9 @@ def test_covariancia_singular_por_poucas_amostras():
     rng = np.random.default_rng(4)
     X = rng.normal(0, 1, size=(6, 5))  # n - K = 4 < d = 5
     X[3:] += 5
-    Y = ["A"] * 3 + ["B"] * 3
+    Y = np.array(["A"] * 3 + ["B"] * 3)
     with pytest.raises((ValueError, np.linalg.LinAlgError)):
-        LDA().fit(X, Y).predict([[0, 0, 0, 0, 0]])
+        LDA().fit(X, Y).predict(np.array([[0, 0, 0, 0, 0]]))
 
 
 # Testa que features colineares (colunas idênticas) geram erro explícito.
@@ -290,14 +290,14 @@ def test_features_colineares():
     col = rng.normal(0, 1, size=(30, 1))
     X = np.hstack([col, col])  # segunda coluna é cópia da primeira
     X[15:] += 5
-    Y = ["A"] * 15 + ["B"] * 15
+    Y = np.array(["A"] * 15 + ["B"] * 15)
     with pytest.raises((ValueError, np.linalg.LinAlgError)):
-        LDA().fit(X, Y).predict([[0, 0]])
+        LDA().fit(X, Y).predict(np.array([[0, 0]]))
 
 
 # Testa que uma feature constante (variância zero) gera erro explícito.
 def test_feature_constante():
     X = np.array([[1, 7], [2, 7], [3, 7], [8, 7], [9, 7], [10, 7]], dtype=float)
-    Y = ["A", "A", "A", "B", "B", "B"]
+    Y = np.array(["A", "A", "A", "B", "B", "B"])
     with pytest.raises((ValueError, np.linalg.LinAlgError)):
-        LDA().fit(X, Y).predict([[2, 7]])
+        LDA().fit(X, Y).predict(np.array([[2, 7]]))
