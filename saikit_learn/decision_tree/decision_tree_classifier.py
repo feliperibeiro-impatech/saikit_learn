@@ -268,7 +268,7 @@ class DecisionTreeClassifier:
 
         return np.array([self._predict_one(x) for x in X])
 
-    def predict(self, X: np.ndarray, y: np.ndarray) -> float:
+    def predict(self, X: np.ndarray) -> float:
         """Prevê o R_m em que o x está situado.
 
         Args:
