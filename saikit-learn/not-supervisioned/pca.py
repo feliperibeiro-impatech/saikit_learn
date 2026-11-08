@@ -33,7 +33,7 @@ class PCA:
       raise ValueError('O PCA ainda não foi ajustado. Execute o método fit primeiro')
   
   def resolve_d(self):
-    if not 0< self.proporcao <= 1:
+    if not 0 < self.proporcao <= 1:
       raise ValueError('A proporção deve pertencer ao intervalo (0,1]')
     
     if self.explained_variance_ratio_ is None:
@@ -42,10 +42,52 @@ class PCA:
     cumulative_sum = np.cumsum(self.explained_variance_ratio_)
     
     return np.searchsorted(cumulative_sum, self.proporcao) + 1
-  
-  
-  def fit():
-    pass
+   
+  def fit(self, X):
+    X = self._valide_matrix(X)
+    N, D = X.shape
+    
+    if self.n_components is not None:
+      if isinstance(self.n_components, (bool,np.bool_)) or not isinstance(self.n_components, (int, np.integer)):
+        raise ValueError('O número de componentes deve ser um inteiro ou o atributo booleano None')
+      
+      if not 1 <= self.n_components <= D:
+        raise ValueError(f'O número de componentes deve estar entre 1 e {D}')
+      
+    mean = np.mean(X, axis=0)
+    X_centered = X - mean
+    
+    S = (X_centered.T @ X_centered) / N
+    
+    if not np.all(np.isfinite(S)):
+      raise ValueError('O cálculo da matriz de covariâncias produziu valores não finitos')
+    
+    eigen_values, eigen_vectors = np.linalg.eigh(S)
+    
+    order = np.argsort(eigen_values)[::-1]
+    eigen_values = eigen_values[order]
+    eigen_vectors = eigen_vectors[:, order]
+    
+    total_variance = np.sum(eigen_values)
+    
+    if total_variance == 0:
+      raise ValueError('Os dados possuem variância total igual a zero. A proporção de variância explicada é indefinida.')
+    
+    self.explained_variance_ratio_ = (eigen_values / total_variance)
+    
+    if self.n_components is None:
+      d = self.resolve_d()
+    else:
+      d = self.n_components
+    
+    self.mean_ = mean
+    self.n_features_inicial_ = D
+    self.eigenvalues_ = eigen_values
+    self.n_components_ = d
+    self.explained_variance_ = eigen_values[:, :d]
+    self.components_ = eigen_vectors[:, :d]
+    
+    return self
   
   def transform():
     pass
