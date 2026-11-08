@@ -38,6 +38,9 @@ class KNN:
         if len(X) != len(y):
             raise ValueError("X e y devem ser de mesmo tamanho") 
 
+        self._X = X
+        self._y = y
+
         return self
 
     def _get_distances_with_labels(self, x: np.ndarray) -> np.ndarray:
