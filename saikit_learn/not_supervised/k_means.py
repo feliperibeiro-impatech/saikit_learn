@@ -1,7 +1,6 @@
 import numpy as np
 from typing import Optional
 
-
 class KMeans:
     def __init__(self, n_clusters: Optional[int], max_iterations=100):
         """
@@ -164,12 +163,12 @@ class KMeans:
     def _elbow(cls, X: np.ndarray, max_k: int = 10) -> dict[str, list]:
         """Calcula todos os pontos `(k, inertia)` de `1` até `max_k`
 
-        Args:
-            `k` (int): Dados de entrada
-            `max_k` (int): Quantidade máxima de clusters.
+            Args:
+                `k` (int): Dados de entrada
+              `max_k` (int): Quantidade máxima de clusters.
 
-        Returns:
-            `P` (dict[str, list]): Objeto contendo todos os clusters e suas inércias respectivamente.
+            Returns:
+                `P` (dict[str, list]): Objeto contendo todos os clusters e suas inércias respectivamente.
         """
         k_values = list(range(1, max_k + 1))
         inertias = []
@@ -184,12 +183,12 @@ class KMeans:
     def find_best_k_elbow(k_values: list[int], inertias: list[float]) -> int:
         """Encontra o ponto `(k, inertia)` com maior distância perpendicular dentre os pontos(método do cotovelo).
 
-        Args:
-            `k_values` (list[int]): Lista de valores de k.
-            `inertias` (list[float]): List de inercias.
-        
-        Returns:
-            `k` (int): Valor de `n_cluster ótimo.
+            Args:
+                `k_values` (list[int]): Lista de valores de k.
+                `inertias` (list[float]): List de inercias.
+            
+            Returns:
+                `k` (int): Valor de `n_cluster ótimo.
         """
         k_norm = (np.array(k_values) - min(k_values)) / (max(k_values) - min(k_values))
         inertia_norm = (np.array(inertias) - min(inertias)) / (
