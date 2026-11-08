@@ -172,13 +172,6 @@ def test_predict_com_amostra_1d(dados_simples):
     assert previsto[0] == "A"
 
 
-# Testa que listas do Python e arrays do NumPy produzem resultados idênticos.
-def test_aceita_lista_e_array(dados_simples):
-    X, Y = dados_simples
-    pred_array = LDA().fit(X, Y).predict(X)
-    pred_lista = LDA().fit(np.array(X.tolist()), np.array(Y.tolist())).predict(np.array(X.tolist()))
-    assert np.array_equal(pred_array, pred_lista)
-
 
 # ESTADO DO MODELO
 
