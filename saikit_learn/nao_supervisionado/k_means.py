@@ -7,8 +7,7 @@ class KMeans:
     self.n_clusters = n_clusters
 
   def fit(self, X:np.ndarray) -> None:
-    """
-      Executa o algoritmo do KMeans para classificar os pontos em X.
+    """Executa o algoritmo do KMeans para classificar os pontos em X.
     """
     self.centroids = X[np.random.choice(X.shape[0], self.n_clusters , replace=False)]
 

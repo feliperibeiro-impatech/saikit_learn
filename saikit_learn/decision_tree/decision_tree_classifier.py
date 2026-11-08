@@ -1,31 +1,7 @@
 import numpy as np
 
+from ._tree_node import TreeNode
 from typing import Optional, Callable
-
-
-class TreeNode:
-    def __init__(
-        self,
-        feature: Optional[int] = None,
-        left: Optional["TreeNode"] = None,
-        right: Optional["TreeNode"] = None,
-        value: Optional[float] = None,
-        gain: Optional[float] = None,
-        threshold: Optional[float] = None,
-        n_samples: int = 0,
-    ):
-        self.feature = feature
-        self.left = left
-        self.right = right
-        self.value = value
-        self.gain = gain
-        self.threshold = threshold
-        self.n_samples = n_samples
-
-    @property
-    def is_leaf(self) -> None:
-        return self.feature is None
-
 
 class DecisionTreeClassifier:
     def __init__(
@@ -95,11 +71,11 @@ class DecisionTreeClassifier:
         node.gain = gain
 
         mask = X[:, feature] <= threshold
-        node.left = self._build_tree(X[mask], y[mask], depth=depth+1)
-        node.right = self._build_tree(X[~mask], y[~mask], depth=depth+1)
+        node.left = self._build_tree(X[mask], y[mask], depth=depth + 1)
+        node.right = self._build_tree(X[~mask], y[~mask], depth=depth + 1)
         return node
 
-    def _get_candidate_thresholds(self, xs_sorted: np.ndarray) -> np.ndarray: 
+    def _get_candidate_thresholds(self, xs_sorted: np.ndarray) -> np.ndarray:
         """Seleciona os candidatos ao corte `s` da árvore de decisão.
 
         Args:
@@ -177,10 +153,10 @@ class DecisionTreeClassifier:
         return best
 
     def _get_criterion_function(self) -> Callable[[np.ndarray], np.ndarray]:
-        """Escolha a função de probabilidade de `_p`.
+        """Escolha a função de probabilidade  de `_p` de acordo com o critério.
 
         Raises:
-            ValueError: Caso criterion não seja nenhum dos valores: `gini`, `classification_error` e `entropy`.
+            ValueError: Caso `criterion` não seja nenhum dos valores: `gini`, `classification_error` e `entropy`.
 
         Returns:
             `p` (Callable[[np.ndarray], np.ndarray]): Função de probabilidade relativa ao método
@@ -241,7 +217,8 @@ class DecisionTreeClassifier:
         if self.tree is None:
             raise ("Árvore não treinada, por favor utilize o método fit antes")
 
-    def get_n_leaves(self) -> int:
+    @property
+    def n_leaves(self) -> int:
         """Obtém a quantidade de folhas na árvore de decisão.
 
         Returns:
@@ -254,8 +231,9 @@ class DecisionTreeClassifier:
 
         return rec(self.tree)
 
-    def get_depth(self) -> int:
-        """Profundidade da árvore de decisão.
+    @property
+    def depth(self) -> int:
+        """Obtém a profundidade da árvore de decisão.
 
         Returns:
             depth: Profundidade da árvore de decisão.
