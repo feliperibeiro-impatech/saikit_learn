@@ -15,14 +15,13 @@ class KMeans:
         self.centroids = None
 
     def fit(self, X: np.ndarray) -> "KMeans":
-        """
-        Executa o algoritmo do KMeans para classificar os pontos em X.
+        """Executa o algoritmo do KMeans para classificar os pontos em X.
 
         Args:
           X: Dados de entrada.
 
         Returns:
-          Kmeans
+          k_means (KMeans):
         """
         self.centroids = X[np.random.choice(X.shape[0], self.n_clusters, replace=False)]
 
@@ -42,22 +41,42 @@ class KMeans:
         return self
 
     def _assign_labels(self, X: np.ndarray) -> np.ndarray:
-        """
-        Classifica os pontos de acordo com os pontos que tem a menor distância euclidiana(norma 2) com cada centroide.
+        """Classifica os pontos de acordo com os pontos que tem a menor distância euclidiana(norma 2) com cada centroide.
 
         Args:
-          X: Dados de entrada
+            `X` (np.ndarray): Dados de entrada
+
+        Returns:
+            `labels` (np.ndarray): Vetor dos labels.
         """
         distances = np.linalg.norm(X[:, np.newaxis] - self.centroids, axis=2)
 
         return np.argmin(distances, axis=1)
 
     def _calculate_inertia(self, X: np.ndarray, labels: np.ndarray) -> float:
+        """Calcula a inércia do modelo com os dados `X`, para os classificadores `labels`
+
+        Args:
+            `X` (np.ndarray): Dados de entrada
+            `labels` (np.ndarray): Vetor de classificadores.
+
+        Returns:
+            float: Valor da inércia.
+        """
         distances = np.linalg.norm(X - self.centroids[labels], axis=1)
 
         return float(np.sum(distances**2))
 
     def _calculate_silhouette_score(self, X: np.ndarray, labels: np.ndarray) -> float:
+        """Calcula o silhouette-score (método para observar o quão bom é o cluster)
+
+        Args:
+            `X` (np.ndarray): Dados de entrada.
+            `labels` (np.ndarray): Vetor dos classificadores.
+
+        Returns:
+            float: valor do silhouette score
+        """
         n_samples = X.shape[0]
         unique_labels = np.unique(labels)
 
@@ -103,6 +122,16 @@ class KMeans:
     def find_best_k_value(
         cls: "KMeans", X: np.ndarray, max_k: int = 10, method="silhouette"
     ) -> int:
+        """Encontra o melhor valor de `n_clusters` para os dados `X`.
+
+        Args:
+            `X` (np.ndarray): Dados de entrada.
+            `max_k` (int, optional): Quantidade máxima de clusters. Valor padrão 10.
+            `method` (str, optional): Método utilizado. Valor padrão "silhouette".
+
+        Returns:
+            `k` (int): Valor ótimo de `n_clusters`.
+        """
         match method:
             case "silhouette":
                 k_values = list(range(2, max_k + 1))
@@ -133,15 +162,14 @@ class KMeans:
 
     @classmethod
     def _elbow(cls, X: np.ndarray, max_k: int = 10) -> dict[str, list]:
-        """
-        Calcula todos os pontos (k, inertia) de 1 até max_k
+        """Calcula todos os pontos `(k, inertia)` de `1` até `max_k`
 
         Args:
-          k: Dados de entrada
-          max_k: Quantidade máxima de clusters.
+            `k` (int): Dados de entrada
+            `max_k` (int): Quantidade máxima de clusters.
 
         Returns:
-          dict[str, list]: Objeto contendo todos os clusters e suas inércias respectivamente.
+            `P` (dict[str, list]): Objeto contendo todos os clusters e suas inércias respectivamente.
         """
         k_values = list(range(1, max_k + 1))
         inertias = []
@@ -154,8 +182,14 @@ class KMeans:
         return {"k_values": k_values, "inertias": inertias}
 
     def find_best_k_elbow(k_values: list[int], inertias: list[float]) -> int:
-        """
-        Encontra o ponto (k, inertia) com maior distância perpendicular dentre os pontos(método do cotovelo).
+        """Encontra o ponto `(k, inertia)` com maior distância perpendicular dentre os pontos(método do cotovelo).
+
+        Args:
+            `k_values` (list[int]): Lista de valores de k.
+            `inertias` (list[float]): List de inercias.
+        
+        Returns:
+            `k` (int): Valor de `n_cluster ótimo.
         """
         k_norm = (np.array(k_values) - min(k_values)) / (max(k_values) - min(k_values))
         inertia_norm = (np.array(inertias) - min(inertias)) / (
@@ -179,8 +213,14 @@ class KMeans:
         return k_values[best_index]
 
     def _update_centroids(self, X: np.ndarray, labels: np.ndarray) -> np.ndarray:
-        """
-        Atualiza os centroides através das medias dos pontos de um determinado grupo k no intervalo [0, n_clusters - 1].
+        """Atualiza os centroides através das medias dos pontos de um determinado grupo `k` no intervalo `[0, n_clusters - 1]`.
+
+            Args:
+                `X` (np.ndarray): Dados de entrada.
+                `labels` (np.ndarray): Classificadores.
+            
+            Returns:
+                `centroids` (np.ndarray): Valores dos centroides de cada cluster.
         """
         new_centroids = np.array(
             [X[labels == i].mean(axis=0) for i in range(self.n_clusters)]
