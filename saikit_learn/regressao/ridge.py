@@ -3,11 +3,23 @@ import numpy as np
 
 class Ridge:
     def __init__(self, lmbd: float = 1.0, intercepto : bool = True):
+        """Inicializa o modelo de regressão Ridge.
+
+        Args:
+            lmbd (float, opcional): Força da penalização L2 aplicada aos coeficientes. Valores maiores encolhem mais e 0 equivale ao OLS. Padrão é 1.0.
+            intercepto (bool, opcional): Se True, inclui o termo constante (intercepto) no modelo, sem penalizá-lo. Padrão é True.
+        """        
         self.lmbd = lmbd
         self.intercepto = intercepto
         self._fitted = False
 
-    def fit(self, X:np.ndarray, y:np.ndarray):
+    def fit(self, X: np.ndarray, y: np.ndarray):
+        """Treina o modelo Ridge com os dados fornecidos.
+
+        Args:
+            X (np.ndarray): Atributos de treino, de shape (n_samples, n_features).
+            y (np.ndarray): Valores-alvo, de shape (n_samples,).
+        """        
         if isinstance(self.lmbd, bool):
             raise ValueError(
                 f'lambda deve ser um número; obtido: {type(self.lmbd)}'
@@ -45,7 +57,15 @@ class Ridge:
         self._fitted = True
         return self
         
-    def predict(self, X:np.ndarray):
+    def predict(self, X: np.ndarray) -> np.ndarray:
+        """Estima os valores de saída para os valores de X.
+
+        Args:
+            X (np.ndarray): Valores a serem estimados, de tamanho n_samples, n_features).
+
+        Returns:
+            np.ndarray: Valores estimados pelo modelo, de tamanho (n_samples,).
+        """        
         X = verify_array(X)
 
         if not self._fitted:

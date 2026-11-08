@@ -2,35 +2,32 @@ from saikit_learn.utilidades.validacao import verify_array, verify_X_y, NotFitte
 import numpy as np
 
 class OLS:    
-    def __init__(self, intercepto:bool = True):
+    def __init__(self, intercepto: bool = True):
         self.intercepto = intercepto
         self._fitted = False
 
-    def _design(self, x:np.ndarray) -> np.ndarray:
-        """_summary_
+    def _design(self, x: np.ndarray) -> np.ndarray:
+        """Monta a matriz de design usada no ajuste.
 
         Args:
-            x (np.ndarray): _description_
+            x (np.ndarray): Matriz de atributos, de tamanho (n_samples, n_features).
 
         Returns:
-            np.ndarray: _description_
+            np.ndarray: Matriz de design, de tamanho (n_samples, n_features + 1) com intercepto ou (n_samples, n_features) sem intercepto.
         """        
         if self.intercepto:
             X = np.column_stack([np.ones(x.shape[0]), x])
             return X
         return x
 
-    def fit(self, x:np.ndarray, y:np.ndarray):
-        """_summary_
+    def fit(self, X: np.ndarray, y:np.ndarray):
+        """Treina o modelo dos X de acordo com os valores y dados.
 
         Args:
-            x (np.ndarray): _description_
-            y (np.ndarray): _description_
-
-        Returns:
-            _type_: _description_
+            X (np.ndarray): Atributos de treino, de shape (n_samples, n_features).
+            y (np.ndarray): Valores-alvo, de shape (n_samples,).
         """           
-        X, y =  verify_X_y(x, y)
+        X, y =  verify_X_y(X, y)
         self.n_features_in_ = X.shape[1]
         X = self._design(X)
 
@@ -41,30 +38,15 @@ class OLS:
         self._fitted = True
         return self
 
-    def predict(self, X:np.ndarray) -> np.ndarray:
-        """_summary_
+    def predict(self, X: np.ndarray) -> np.ndarray:
+        """Estima os valores de X 
 
         Args:
-            X (np.ndarray): _description_
-
-        Raises:
-            ValueError: _description_
-            NotFittedError: _description_
+            X (np.ndarray): Valores a serem estimados, de tamanho (n_samples, n_features).
 
         Returns:
-            np.ndarray: _description_
-        """        '''Predict y for new sample.
-
-        Parameters:
-            X : np.ndarray shape (n_sample, n_features)
-        
-        Returns:
-            ndarray shape (n_sample)
-
-        Raise:
-            NotFittedError
-
-        '''
+            np.ndarray: Valores estimados pelo método, de tamanho (n_samples,).
+        """  
         X = verify_array(X)
 
         if not self._fitted:
@@ -77,4 +59,3 @@ class OLS:
                 f'a dimensão das features distingu; necessário: {self.n_features_in_}; obtido: {X.shape[1]}'
                              )
         return X @ self.coef_ + self.intercept_
-
