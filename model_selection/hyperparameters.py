@@ -1,17 +1,23 @@
 import numpy as np
 
-class gridSearchCV():
-    def __init__(self, estimator : object, param_grid : dict, scoring = None, refit = False, cv = 5):
+class GridSearchCV():
+    def __init__(self, estimator, param_grid : dict, scoring = None, refit = True, cv = 5):
+        keys = list(param_grid.keys())
+        values = list(param_grid.values())
+        n_params = []
+        for v in values:
+            n_params.append(len(v))
+        for indices in np.ndindex(*n_params):
+            params = {}
+            for i in range(len(keys)):
+                params[keys[i]] = values[i][indices[i]]
         self.estimator = estimator
-        self.param_grid = param_grid
-        self.score = scoring
-        self.cv = cv
+        self.param_grid = params
+        self.scoring = scoring
+        self.refit = refit
+        self.cv = 5
 
     def fit(self, x, y):
-        return None
-        self.estimator(param_grid[0][0], param_grid[1][0])
+        raise NotImplementedError
         self.estimator.fit()
-
-    def score(self, x, y):
-        return None
         self.estimator.predict()
