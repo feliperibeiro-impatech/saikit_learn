@@ -59,10 +59,21 @@ def MAE(X: NDArray[np.float64], y_pred: NDArray[np.float64]) -> float:
     absolute_errors = np.abs(X - y_pred)
     return float(np.mean(absolute_errors))
 
-def RSS(): #DAVI
-    pass
+def RSS(X: NDArray[np.float64], y_pred: NDArray[np.float64]) -> float:
+    """
+    Calcula a soma dos quadrados dos resíduos (RSS) entre os valores reais e os valores previstos.
 
-def R2(): #DAVI
+    Parametros:
+    X (NDArray[np.float64]): Os valores reais.
+    y_pred (NDArray[np.float64]): Os valores previstos.
+
+    Retorno:
+    float: A soma dos quadrados dos resíduos.
+    """
+    squared_errors = (X - y_pred) ** 2
+    return float(np.sum(squared_errors))
+
+def R2(): 
     pass
 
 def R2_ajustado(): #DAVI
