@@ -6,8 +6,8 @@ class KMeans:
     def __init__(self, n_clusters: Optional[int], max_iterations=100):
         """
         Args:
-          n_clusters (int): Número de Clusters (hiperparâmetro).
-          max_interation (int): Número de iterações máximo que o algoritmo fará para obter os centróides.
+          `n_clusters` (int): Número de Clusters (hiperparâmetro).
+          `max_iterations` (int): Número de iterações máximo que o algoritmo fará para obter os centróides.
         """
         self.max_iterations = max_iterations
         self.n_clusters = n_clusters
