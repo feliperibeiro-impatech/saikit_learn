@@ -64,7 +64,11 @@ class QDA(_BaseDiscriminant):
         if self._covariance is None:
             raise RuntimeError("Chame fit antes de predict.")
 
-        X = np.asarray(X, dtype=np.float64)
+        if not isinstance(X, np.ndarray):
+            raise TypeError(f"X deve ser np.ndarray, recebeu {type(X).__name__}")
+
+        X = X.astype(np.float64, copy=False)
+
         if X.ndim == 1:
             X = X.reshape(1, -1)
         if X.ndim != 2 or X.shape[1] != self._n_features:
