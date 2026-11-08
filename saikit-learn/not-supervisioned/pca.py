@@ -32,8 +32,17 @@ class PCA:
     if self.n_components_ is None:
       raise ValueError('O PCA ainda não foi ajustado. Execute o método fit primeiro')
   
-  def resolve_d():
-    pass
+  def resolve_d(self):
+    if not 0< self.proporcao <= 1:
+      raise ValueError('A proporção deve pertencer ao intervalo (0,1]')
+    
+    if self.explained_variance_ratio_ is None:
+      raise ValueError('A proporção de variância explicada ainda não foi calculada, execute o método fit primeiro')
+    
+    cumulative_sum = np.cumsum(self.explained_variance_ratio_)
+    
+    return np.searchsorted(cumulative_sum, self.proporcao) + 1
+  
   
   def fit():
     pass
