@@ -270,3 +270,51 @@ def test_fit_detecta_divergencia(dados_lineares):
     X, Y = dados_lineares
     with pytest.raises(FloatingPointError):
         MLPRegressor(hidden_layers=(8,), learning_rate=1e6, n_epochs=200, random_state=0).fit(X * 100, Y)
+
+# PREDICT
+
+# Testa que a saída é um vetor 1D com uma previsão por linha de X.
+def test_predict_formato_da_saida(dados_lineares):
+    X, Y = dados_lineares
+    previsto = MLPRegressor(n_epochs=5, random_state=0).fit(X, Y).predict(X[:7])
+    assert isinstance(previsto, np.ndarray)
+    assert previsto.shape == (7,)
+
+
+# Testa que uma amostra 1D é aceita e tratada como matriz (1, d).
+def test_predict_com_amostra_1d(dados_lineares):
+    X, Y = dados_lineares
+    previsto = MLPRegressor(n_epochs=5, random_state=0).fit(X, Y).predict(np.array([0.5, -0.5]))
+    assert previsto.shape == (1,)
+
+
+# Testa que predict antes do fit levanta RuntimeError.
+def test_predict_antes_do_fit():
+    with pytest.raises(RuntimeError):
+        MLPRegressor().predict(np.array([[1, 2]]))
+
+
+# Testa que o predict rejeita número de colunas diferente do usado no fit.
+def test_predict_com_numero_errado_de_colunas(dados_lineares):
+    X, Y = dados_lineares
+    modelo = MLPRegressor(n_epochs=5, random_state=0).fit(X, Y)
+    with pytest.raises(ValueError):
+        modelo.predict(np.array([[1, 2, 3]]))
+
+
+# Testa que o predict rejeita NaN e infinito.
+@pytest.mark.parametrize("valor", [np.nan, np.inf])
+def test_predict_com_valores_nao_finitos(dados_lineares, valor):
+    X, Y = dados_lineares
+    modelo = MLPRegressor(n_epochs=5, random_state=0).fit(X, Y)
+    with pytest.raises(ValueError):
+        modelo.predict(np.array([[valor, 0.0]]))
+
+
+# Testa que o predict não altera os pesos do modelo.
+def test_predict_nao_altera_parametros(dados_lineares):
+    X, Y = dados_lineares
+    modelo = MLPRegressor(n_epochs=5, random_state=0).fit(X, Y)
+    antes = [W.copy() for W in modelo._weights]
+    modelo.predict(X)
+    assert all(np.array_equal(a, W) for a, W in zip(antes, modelo._weights))

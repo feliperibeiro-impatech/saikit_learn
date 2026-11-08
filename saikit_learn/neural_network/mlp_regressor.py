@@ -2,7 +2,7 @@ import numpy as np
 
 class MLPRegressor:
     def __init__(self, hidden_layers: tuple=(10,), learning_rate: float=0.01, n_epochs: int=1000, random_state: int = None):
-        """_summary_
+        """Inicializa o regressor MLP.
 
         Args:
             hidden_layers (tuple, opcional): Tamanhos das camadas ocultas. Padrão é (10,).
