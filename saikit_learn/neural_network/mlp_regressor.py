@@ -147,8 +147,21 @@ class MLPRegressor:
 
         return self
 
-    def predict(self, X: np.ndarray) ->  np.ndarray:
-        pass
+    def predict(self, X: np.ndarray) -> np.ndarray:
+        if self._weights is None:
+            raise RuntimeError("Chame fit antes de predict.")
+
+        if not isinstance(X, np.ndarray):
+            raise TypeError(f"X deve ser np.ndarray, recebeu {type(X).__name__}.")
+        if X.ndim == 1:
+            X = X.reshape(1, -1)
+        if X.ndim != 2 or X.shape[1] != self._n_features:
+            raise ValueError(f"X deve ter shape (n_samples, {self._n_features}).")
+        if not np.isfinite(X).all():
+            raise ValueError("X contém NaN ou infinito.")
+
+        activations, _ = self._forward(X)
+        return activations[-1].ravel()
     
     
     
