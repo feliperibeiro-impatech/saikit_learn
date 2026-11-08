@@ -89,8 +89,17 @@ class PCA:
     
     return self
   
-  def transform():
-    pass
+  def transform(self):
+    self._verify_PCA()
+    X = self._valide_matrix(X)
+    
+    if X.shape[1] != self.n_features_inicial_:
+      raise ValueError(f'A matriz dos dados deve possui{self.n_features_inicial_} colunas.')
+    
+    X_centered = X - self.mean_
+    
+    return X_centered @ self.components_
+  
   
   def fit_transform():
     pass
