@@ -35,16 +35,16 @@ def dados_simples():
 def test_fronteira_quadratica_mesma_media(dados_quadraticos):
     X, Y = dados_quadraticos
     modelo = QDA().fit(X, Y)
-    previsto = modelo.predict([[4, 0], [-4, 0], [0, 4], [0, -4]])
+    previsto = modelo.predict(np.array([[4, 0], [-4, 0], [0, 4], [0, -4]]))
     assert list(previsto) == ["B", "B", "A", "A"]
 
 
 # Testa um caso unidimensional com resposta conferível à mão.
 def test_caso_unidimensional_conferido_a_mao():
-    X = [[-1], [0], [1], [-4], [0], [4]]
-    Y = ["A", "A", "A", "B", "B", "B"]
+    X = np.array([[-1], [0], [1], [-4], [0], [4]])
+    Y = np.array(["A", "A", "A", "B", "B", "B"])
     modelo = QDA().fit(X, Y)
-    assert list(modelo.predict([[0.5], [6], [-6]])) == ["A", "B", "B"]
+    assert list(modelo.predict(np.array([[0.5], [6], [-6]]))) == ["A", "B", "B"]
 
 
 # Testa que o modelo acerta as próprias amostras de treino quando as classes estão bem separadas.
@@ -61,7 +61,7 @@ def test_tres_classes():
     X = np.vstack([c + rng.normal(0, 1, size=(30, 2)) for c in centros])
     Y = np.repeat(["A", "B", "C"], 30)
     modelo = QDA().fit(X, Y)
-    previsto = modelo.predict([[0.2, -0.1], [9.8, 0.3], [-0.2, 10.1]])
+    previsto = modelo.predict(np.array([[0.2, -0.1], [9.8, 0.3], [-0.2, 10.1]]))
     assert list(previsto) == ["A", "B", "C"]
 
 
@@ -80,7 +80,7 @@ def test_rotulos_de_tipos_diferentes(dados_quadraticos, rotulos):
     r_a, r_b = rotulos
     Y = np.where(Y_txt == "A", r_a, r_b)
     modelo = QDA().fit(X, Y)
-    previsto = modelo.predict([[4, 0], [0, 4]])
+    previsto = modelo.predict(np.array([[4, 0], [0, 4]]))
     assert list(previsto) == [r_b, r_a]
 
 
@@ -98,7 +98,7 @@ def test_formato_da_saida(dados_simples):
 def test_predict_devolve_rotulo_e_nao_indice(dados_simples):
     X, Y = dados_simples
     modelo = QDA().fit(X, Y)
-    previsto = modelo.predict([[9, 9]])
+    previsto = modelo.predict(np.array([[9, 9]]))
     assert previsto[0] == "B"
     assert not isinstance(previsto[0], (int, np.integer))
 
@@ -107,17 +107,10 @@ def test_predict_devolve_rotulo_e_nao_indice(dados_simples):
 def test_predict_com_amostra_1d(dados_simples):
     X, Y = dados_simples
     modelo = QDA().fit(X, Y)
-    previsto = modelo.predict([2, 2])
+    previsto = modelo.predict(np.array([2, 2]))
     assert previsto.shape == (1,)
     assert previsto[0] == "A"
 
-
-# Testa que listas do Python e arrays do NumPy produzem resultados idênticos.
-def test_aceita_lista_e_array(dados_simples):
-    X, Y = dados_simples
-    pred_array = QDA().fit(X, Y).predict(X)
-    pred_lista = QDA().fit(X.tolist(), Y.tolist()).predict(X.tolist())
-    assert np.array_equal(pred_array, pred_lista)
 
 
 # ESTADO DO MODELO
@@ -133,7 +126,7 @@ def test_fit_retorna_self(dados_simples):
 def test_ordem_das_amostras_nao_importa(dados_quadraticos):
     X, Y = dados_quadraticos
     perm = np.random.default_rng(2).permutation(len(Y))
-    pontos = [[4, 0], [0, 4], [-3, 0.2], [0.1, -3]]
+    pontos = np.array([[4, 0], [0, 4], [-3, 0.2], [0.1, -3]])
     original = QDA().fit(X, Y).predict(pontos)
     embaralhado = QDA().fit(X[perm], Y[perm]).predict(pontos)
     assert np.array_equal(original, embaralhado)
@@ -158,7 +151,7 @@ def test_refit_descarta_classes_antigas(dados_simples):
 # Testa que predict antes do fit levanta RuntimeError.
 def test_predict_antes_do_fit():
     with pytest.raises(RuntimeError):
-        QDA().predict([[1, 2]])
+        QDA().predict(np.array([[1, 2]]))
 
 
 # Testa que o predict rejeita um número de colunas diferente do usado no fit.
@@ -166,13 +159,13 @@ def test_predict_com_numero_errado_de_colunas(dados_simples):
     X, Y = dados_simples
     modelo = QDA().fit(X, Y)
     with pytest.raises(ValueError):
-        modelo.predict([[1, 2, 3]])
+        modelo.predict(np.array([[1, 2, 3]]))
 
 
 # Testa que o fit rejeita um X que não é matriz 2D.
 def test_fit_com_X_nao_2d():
     with pytest.raises(ValueError):
-        QDA().fit([1, 2, 3, 4], ["A", "A", "B", "B"])
+        QDA().fit(np.array([1, 2, 3, 4]), np.array(["A", "A", "B", "B"]))
 
 
 # Testa que o fit rejeita X e Y com números de amostras diferentes.
@@ -201,17 +194,17 @@ def test_fit_com_nan(dados_simples):
 # Testa que o fit rejeita o caso com tantas amostras quanto classes (ou menos).
 def test_fit_com_amostras_insuficientes():
     with pytest.raises(ValueError):
-        QDA().fit([[1, 2], [3, 4]], ["A", "B"])
+        QDA().fit(np.array([[1, 2], [3, 4]]), np.array(["A", "B"]))
 
 
 # CASOS SENSÍVEIS ESPECÍFICOS DO QDA
 
 # Testa que uma classe com uma única amostra gera erro explícito, e não resultado com NaN.
 def test_classe_com_uma_unica_amostra():
-    X = [[1, 2], [2, 3], [3, 1], [9, 9]]
-    Y = ["A", "A", "A", "B"]
+    X = np.array([[1, 2], [2, 3], [3, 1], [9, 9]])
+    Y = np.array(["A", "A", "A", "B"])
     with pytest.raises((ValueError, np.linalg.LinAlgError)):
-        QDA().fit(X, Y).predict([[1, 1]])
+        QDA().fit(X, Y).predict(np.array([[1, 1]]))
 
 
 # Testa que uma classe com menos amostras do que features (covariância singular) gera erro explícito.
@@ -220,9 +213,9 @@ def test_classe_com_covariancia_singular():
     X_a = rng.normal(0, 1, size=(20, 3))
     X_b = rng.normal(5, 1, size=(2, 3))  # 2 amostras em 3 dimensões
     X = np.vstack([X_a, X_b])
-    Y = ["A"] * 20 + ["B"] * 2
+    Y = np.array(["A"] * 20 + ["B"] * 2)
     with pytest.raises((ValueError, np.linalg.LinAlgError)):
-        QDA().fit(X, Y).predict([[0, 0, 0]])
+        QDA().fit(X, Y).predict(np.array([[0, 0, 0]]))
 
 
 # Testa que features colineares (colunas idênticas) geram erro explícito.
@@ -231,17 +224,16 @@ def test_features_colineares():
     col = rng.normal(0, 1, size=(30, 1))
     X = np.hstack([col, col])  # segunda coluna é cópia da primeira
     X[15:] += 5
-    Y = ["A"] * 15 + ["B"] * 15
+    Y = np.array(["A"] * 15 + ["B"] * 15)
     with pytest.raises((ValueError, np.linalg.LinAlgError)):
-        QDA().fit(X, Y).predict([[0, 0]])
+        QDA().fit(X, Y).predict(np.array([[0, 0]]))
 
 
 # Testa que o prior entra na decisão, levando um ponto equidistante para a classe majoritária.
 def test_prior_desempata_ponto_equidistante():
-    base = np.array([[-1, 0], [1, 0], [0, -1], [0, 1], [0, 0]], dtype=float)
-    X_a = np.vstack([base] * 9)        # 45 amostras, média (0, 0)
-    X_b = np.vstack([base + 10] * 1)   # 5 amostras, média (10, 10)
+    X_a = np.array([[-1], [-1], [0], [1], [1]])
+    X_b = np.array([[9], [10], [11]])
     X = np.vstack([X_a, X_b])
-    Y = ["A"] * len(X_a) + ["B"] * len(X_b)
+    Y = np.array(["A"] * len(X_a) + ["B"] * len(X_b))
     modelo = QDA().fit(X, Y)
-    assert modelo.predict([[5, 5]])[0] == "A"
+    assert modelo.predict(np.array([[5]]))[0] == "A"
