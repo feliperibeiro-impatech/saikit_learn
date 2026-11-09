@@ -1,4 +1,4 @@
-from saikit_learn.utilidades.validacao import verify_array, verify_X_y, NotFittedError
+from utils.validacao import verify_array, verify_X_y, NotFittedError
 import numpy as np
 
 class OLS:    

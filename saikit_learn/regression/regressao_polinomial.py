@@ -1,5 +1,5 @@
-from saikit_learn.utilidades.validacao import verify_array, verify_X_y, NotFittedError
-from saikit_learn.regressao.minimos_quadrados import OLS
+from utils.validacao import verify_array, verify_X_y, NotFittedError
+from saikit_learn.regression.minimos_quadrados import OLS
 import numpy as np
 
 class PolReg:

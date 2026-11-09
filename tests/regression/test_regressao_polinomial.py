@@ -1,5 +1,5 @@
-from saikit_learn.regressao import PolReg, OLS
-from saikit_learn.utilidades.validacao import NotFittedError
+from saikit_learn.regression import PolReg, OLS
+from saikit_learn.regression.utils.validacao import NotFittedError
 import numpy as np
 import pytest
 
