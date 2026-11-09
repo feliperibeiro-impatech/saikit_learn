@@ -1,14 +1,15 @@
 import numpy as np
 from typing import Optional
 
+
 class KMeans:
     def __init__(
-            self, 
-            n_clusters: Optional[int],
-            max_iterations = 100,
-            auto_k_method: Optional[str] = "silhouette",
-            max_k: Optional[int] = 10
-        ):
+        self,
+        n_clusters: Optional[int],
+        max_iterations=100,
+        auto_k_method: Optional[str] = "silhouette",
+        max_k: Optional[int] = 10,
+    ):
         """
         Args:
           `n_clusters` (int): Número de Clusters (hiperparâmetro).
@@ -42,15 +43,17 @@ class KMeans:
             if self.n_clusters <= 0:
                 raise ValueError("`n_clusters` deve ser um natural.")
             self.n_clusters_ = self.n_clusters
-        
+
         n_samples = X.shape[0]
         if n_samples < self.n_clusters_:
             raise ValueError(
                 f"O número de amostras ({n_samples}) não pode ser menor que",
-                f"o número de cluster ({self.n_clusters})"
+                f"o número de cluster ({self.n_clusters})",
             )
 
-        self.centroids = X[np.random.choice(X.shape[0], self.n_clusters_, replace=False)]
+        self.centroids = X[
+            np.random.choice(X.shape[0], self.n_clusters_, replace=False)
+        ]
 
         for _ in range(self.max_iterations):
             labels = self._assign_labels(X)
@@ -194,12 +197,12 @@ class KMeans:
     def _elbow(cls, X: np.ndarray, max_k: int = 10) -> dict[str, list]:
         """Calcula todos os pontos `(k, inertia)` de `1` até `max_k`
 
-            Args:
-                `k` (int): Dados de entrada
-              `max_k` (int): Quantidade máxima de clusters.
+        Args:
+            `k` (int): Dados de entrada
+          `max_k` (int): Quantidade máxima de clusters.
 
-            Returns:
-                `P` (dict[str, list]): Objeto contendo todos os clusters e suas inércias respectivamente.
+        Returns:
+            `P` (dict[str, list]): Objeto contendo todos os clusters e suas inércias respectivamente.
         """
         k_values = list(range(1, max_k + 1))
         inertias = []
@@ -214,12 +217,12 @@ class KMeans:
     def find_best_k_elbow(k_values: list[int], inertias: list[float]) -> int:
         """Encontra o ponto `(k, inertia)` com maior distância perpendicular dentre os pontos(método do cotovelo).
 
-            Args:
-                `k_values` (list[int]): Lista de valores de k.
-                `inertias` (list[float]): List de inercias.
-            
-            Returns:
-                `k` (int): Valor de `n_cluster ótimo.
+        Args:
+            `k_values` (list[int]): Lista de valores de k.
+            `inertias` (list[float]): List de inercias.
+
+        Returns:
+            `k` (int): Valor de `n_cluster ótimo.
         """
         k_norm = (np.array(k_values) - min(k_values)) / (max(k_values) - min(k_values))
         inertia_norm = (np.array(inertias) - min(inertias)) / (
@@ -245,19 +248,19 @@ class KMeans:
     def _update_centroids(self, X: np.ndarray, labels: np.ndarray) -> np.ndarray:
         """Atualiza os centroides através das medias dos pontos de um determinado grupo `k` no intervalo `[0, n_clusters - 1]`.
 
-            Args:
-                `X` (np.ndarray): Dados de entrada.
-                `labels` (np.ndarray): Classificadores.
-            
-            Returns:
-                `centroids` (np.ndarray): Valores dos centroides de cada cluster.
+        Args:
+            `X` (np.ndarray): Dados de entrada.
+            `labels` (np.ndarray): Classificadores.
+
+        Returns:
+            `centroids` (np.ndarray): Valores dos centroides de cada cluster.
         """
         new_centroids = np.zeros_like(self.centroids)
 
         for i in range(self.n_clusters_):
             cluster_points = X[labels == i]
             if len(cluster_points) > 0:
-                new_centroids[i] = cluster_points.mean(axis = 0)
+                new_centroids[i] = cluster_points.mean(axis=0)
             else:
                 new_centroids[i] = self.centroids[i]
 
