@@ -199,4 +199,4 @@ class PCA:
     if Z.shape[1] != self.n_components_:
       raise ValueError(f'A matriz deve possuir {self.n_components_} colunas')
     
-    return Z @ self.n_components_.T + self.mean_
+    return Z @ self.components_.T + self.mean_
