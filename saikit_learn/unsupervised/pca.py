@@ -203,4 +203,44 @@ class PCA:
     if Z.shape[1] != self.n_components_:
       raise ValueError(f'A matriz deve possuir {self.n_components_} colunas')
     
-    return Z @ self.components_.T + self.mean_
+    return Z @ self.components_.T + self.mean_ 
+  
+  def plot_eigen_values(self, tol=0.05, show=True ):
+    import matplotlib.pyplot as plt
+    from matplotlib.ticker import MaxNLocator
+    
+    self._verify_PCA()
+    
+    if not 0 < tol < 1:
+      raise ValueError('A tolerância deve pertencer ao intervalo (0,1)')
+
+    D = self.n_features_inicial_
+    if D < 3:
+      raise ValueError('Use pelo menos três para analisar o método do cotovelo')
+    
+    eig = self.eigenvalues_
+    
+    falls = (eig[:-1] - eig[1:]) / eig[0]
+    
+    maximum_fall = np.maximum.accumulate(falls[::-1])[::-1]
+    
+    candidates = np.flatnonzero(maximum_fall < tol)
+    
+    if candidates.size == 0:
+      d = D
+    else:
+      d = max(1, int(candidates[0]))
+    
+    fig, ax = plt.subplots()
+    ax.plot(np.arange(1, D + 1), eig, marker='o')
+    ax.axvline(d, linestyle='--', color='red', label=f'cotovelo: d = {d}')
+    ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+    ax.set_xlabel('Componente principal')
+    ax.set_ylabel('Autovalor')
+    ax.set_title('Scree plot')
+    ax.legend()
+    
+    if show:
+      plt.show()
+    
+    return d
