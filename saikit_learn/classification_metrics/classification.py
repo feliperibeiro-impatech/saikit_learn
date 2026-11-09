@@ -16,8 +16,21 @@ class ClassificationMetrics():
             pass
 
     def accuracy(self, matrix = True, normalize = None):
-        #accuracy and confusion matrix
-        pass
+        if matrix == False:
+            y_true = self.y_true
+            y_pred = self.y_pred
+            n = len(y_true)
+            s = 0
+            for i in range(n):
+                if y_true[i] == y_pred[i]:
+                    s = s + 1
+            if normalize == False:
+                return s
+            if normalize == True:
+                return s / n
+        else:
+            #confusion matrix
+            pass
 
     def loss(self, normalize = True, custom = False) -> float:
         if custom == True:
