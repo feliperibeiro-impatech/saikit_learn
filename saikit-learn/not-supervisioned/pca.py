@@ -161,7 +161,7 @@ class PCA:
     X = self._valide_matrix(X)
     
     if X.shape[1] != self.n_features_inicial_:
-      raise ValueError(f'A matriz dos dados deve possui {self.n_features_inicial_} colunas.')
+      raise ValueError(f'A matriz dos dados deve possuir {self.n_features_inicial_} colunas.')
     
     X_centered = X - self.mean_
     
