@@ -1,4 +1,6 @@
 import numpy as np
+import matplotlib
+matplotlib.use("Agg")
 import pytest
 
 from saikit_learn.unsupervised.pca import PCA  # ajuste para o nome do seu módulo
@@ -351,3 +353,21 @@ def test_inverse_transform_numero_de_colunas_errado(X):
     pca = PCA(n_components=2).fit(X)
     with pytest.raises(ValueError, match="colunas"):
         pca.inverse_transform(np.zeros((4, 3)))
+
+# --------------------------------------------------------------------------
+# plot_eigen_values
+# --------------------------------------------------------------------------
+
+def test_plot_eigen_values_cotovelo():
+    rng = np.random.default_rng(0)
+    # 2 direções com variância alta, 4 com ruído pequeno
+    X = rng.normal(size=(500, 6)) * np.array([10, 8, 0.3, 0.3, 0.3, 0.3])
+    pca = PCA().fit(X)
+    assert pca.plot_eigen_values(show=False) == 2
+
+def test_plot_eigen_values_erros():
+    X = np.random.default_rng(0).normal(size=(50, 4))
+    with pytest.raises(ValueError):
+        PCA().plot_eigen_values(show=False)       # não ajustado
+    with pytest.raises(ValueError):
+        PCA().fit(X).plot_eigen_values(tol=1.5, show=False)
