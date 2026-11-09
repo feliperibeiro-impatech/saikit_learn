@@ -146,6 +146,17 @@ class PCA:
     return self
   
   def transform(self, X):
+    """Projeta os dados no espaço dos componentes principais.
+
+    Args:
+        X (array-like): base de dados com shape (n_amostras, n_atributos).
+
+    Raises:
+        ValueError: se o número de colunas de 'X' for diferente do número de atributos vistos no ajuste.
+
+    Returns:
+        NDArray: matriz com shape (n_amostras, n_components_) com os dados centralizados e projetados nos componentes principais.
+    """
     self._verify_PCA()
     X = self._valide_matrix(X)
     
