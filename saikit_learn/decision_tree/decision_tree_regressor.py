@@ -37,8 +37,10 @@ class DecisionTreeRegressor:
         y = np.asarray(y, dtype=float)
 
         if X.ndim != 2:
-            raise ValueError("as amostras X deve ser em duas dimensões (n_amostras, n_features)")
-        if y.ndim != 1:
+            raise ValueError(
+                "as amostras X deve ser em duas dimensões (n_amostras, n_features)"
+            )
+        if y.ndim != 1 or len(y) != len(X):
             raise ValueError("y deve ser 1D e ter o mesmo número de linhas que X")
 
         self.n_features = X.shape[1]
@@ -86,7 +88,7 @@ class DecisionTreeRegressor:
         Returns:
             `impurity_value` (float): Valor da impureza.
         """
-        return float(np.mean((y - np.mean(y))) ** 2)
+        return float(np.mean((y - np.mean(y)) ** 2))
 
     def _get_best_split(self, X: np.ndarray, y: np.ndarray):
         """Escolhe os melhores valores de corte de `X` para `y`.
@@ -109,8 +111,8 @@ class DecisionTreeRegressor:
             xs = X[order, j]
             ys = y_c[order]
 
-            cum_y = np.concatenate([[0.0, 0.0], np.cumsum(ys)])
-            cum_y2 = np.concatenate([[0.0, 0.0], np.cumsum(ys**2)])
+            cum_y = np.concatenate([[0.0], np.cumsum(ys)])
+            cum_y2 = np.concatenate([[0.0], np.cumsum(ys**2)])
 
             thresholds = self._get_candidate_thresholds(xs)
             if thresholds.size == 0:
@@ -157,16 +159,10 @@ class DecisionTreeRegressor:
             `candidate_thresholds` (np.ndarray): Possíveis cortes.
         """
         if self.split_strategy == "median":
-            u = np.unique(xs_sorted)
-
-            if u.size == 0:
-                return np.empty(0)
-
-            index = len(u) / 2
-            return np.array([(u[index - 1] + u[index]) / 2])
+            return np.array([np.median(xs_sorted)])
 
         u = np.unique(xs_sorted)
-        if u.size < 2:
+        if u.size == 0:
             return np.empty(0)
 
         mid = (u[:-1] + u[1:]) / 2
@@ -193,7 +189,7 @@ class DecisionTreeRegressor:
 
         X = np.asarray(X, dtype=float)
         if X.ndim == 1:
-            X.reshape(1, -1)
+            X = X.reshape(1, -1)
 
         return np.array([self._predict_one(x) for x in X])
 
@@ -239,7 +235,7 @@ class DecisionTreeRegressor:
             depth: Profundidade da árvore de decisão.
         """
         self._check_fitted()
- 
+
         def rec(node: TreeNode):
             return 0 if node.is_leaf else 1 + max(rec(node.left), rec(node.right))
 
