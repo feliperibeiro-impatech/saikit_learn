@@ -1,4 +1,5 @@
 import numpy as np
+<<<<<<< HEAD
 from typing import Optional
 
 class KMeans:
@@ -262,3 +263,16 @@ class KMeans:
                 new_centroids[i] = self.centroids[i]
 
         return new_centroids
+=======
+
+class KMeans:
+  def __init__(self, x: np.ndarray, y: np.ndarray):
+    pass
+
+  @property
+  def elbow() -> np.ndarray: 
+    pass
+
+  def __repr__(self):
+    pass
+>>>>>>> 6ad383e1b8a406395b90c486fd05fb211bf92dd7
