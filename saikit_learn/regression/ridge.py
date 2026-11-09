@@ -20,9 +20,9 @@ class Ridge:
             X (np.ndarray): Atributos de treino, de shape (n_samples, n_features).
             y (np.ndarray): Valores-alvo, de shape (n_samples,).
         """        
-        if isinstance(self.lmbd, bool):
+        if isinstance(self.intercept_, bool):
             raise ValueError(
-                f'lambda deve ser um número; obtido: {type(self.lmbd)}'
+                f'intecepto deve ser booleano; obtido: {type(self.intercept_)}'
             )
 
         try:
@@ -33,7 +33,7 @@ class Ridge:
                 f'lambda deve ser um número; obtido: {type(self.lmbd)}'
             )
 
-        if not np.isfinite(lmbd) or isinstance(lmbd, bool) or lmbd < 0:
+        if not np.isfinite(lmbd) or isinstance(self.lmbd, bool) or self.lmbd < 0:
             raise ValueError(
                 f'lambda deve ser um número real não negativo; obtido: {self.lmbd}'
             )
