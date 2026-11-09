@@ -81,8 +81,24 @@ def RSS(X: NDArray[np.float64], y_pred: NDArray[np.float64]) -> float:
     squared_errors = (X - y_pred) ** 2
     return float(np.sum(squared_errors))
 
-def R2(): 
-    pass
+def R2(X: NDArray[np.float64], y_pred: NDArray[np.float64]) -> float:
+    """
+    Calcula o coeficiente de determinação (R²) entre os valores reais e os valores previstos.
+
+    Parametros:
+    X (NDArray[np.float64]): Os valores reais.
+    y_pred (NDArray[np.float64]): Os valores previstos.
+
+    Retorno:
+    float: O coeficiente de determinação (R²).
+    """
+    X, y_pred = validate_regression_inputs(X, y_pred)
+    rss = RSS(X, y_pred)
+    tss = np.sum((X - np.mean(X)) ** 2)
+    if tss == 0:
+        raise ValueError("A variância dos valores reais é zero, não é possível calcular R²")
+    return float(1 - (rss / tss))
+
 
 def R2_ajustado(): #DAVI
     pass
