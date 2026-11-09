@@ -57,7 +57,7 @@ class PCA:
     """Verifica se o PCA já foi ajustado aos dados.
 
     Raises:
-        ValueError: se o PCA não foi ajustado, ou seja, se o método fit ainda não executado antes.
+        ValueError: se o PCA não foi ajustado, ou seja, se o método fit ainda não foi executado antes.
     """
     if self.n_components_ is None:
       raise ValueError('O PCA ainda não foi ajustado. Execute o método fit primeiro')
@@ -93,7 +93,7 @@ class PCA:
 
     Raises:
         ValueError: se 'n_components' não for None nem um inteiro.
-        ValueError: se 'n_components' não estiver entre 1 o número de atributos de 'X'.
+        ValueError: se 'n_components' não estiver entre 1 e o número de atributos de 'X'.
         ValueError: se o cálculo da matriz de covariância produzir valores não finitos.
         ValueError: se a variância total dos dados for igual a zero.
 
@@ -161,7 +161,7 @@ class PCA:
     X = self._valide_matrix(X)
     
     if X.shape[1] != self.n_features_inicial_:
-      raise ValueError(f'A matriz dos dados deve possui{self.n_features_inicial_} colunas.')
+      raise ValueError(f'A matriz dos dados deve possui {self.n_features_inicial_} colunas.')
     
     X_centered = X - self.mean_
     
