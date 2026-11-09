@@ -8,7 +8,12 @@ class Lasso:
         Args:
             lmbd (float, opcional): Força da penalidade L1 (>= 0).. Padrão é 1.0.
             intercepto (bool, opcional): Se True, ajusta um intercepto não penalizado. Padrão é True.
-        """        
+        """
+        if (isinstance(lmbd, bool) 
+                or not isinstance(lmbd, (int, float, np.integer, np.floating))
+                or not np.isfinite(lmbd) or lmbd < 0):
+            raise ValueError("lmbd deve ser um número real finito e não negativo.")
+        
         self.lmbd = lmbd
         self.intercepto = intercepto
         self._fitted = False
