@@ -1,4 +1,4 @@
-from saikit_learn.utilidades.validacao import verify_X_y, NotFittedError
+from saikit_learn.utilidades.validacao import verify_X_y, verify_array, NotFittedError
 import numpy as np
 
 class Lasso:
@@ -55,5 +55,23 @@ class Lasso:
         return self
     
     def predict(self, X : np.ndarray):
-        pass
+        """Estima os alvos para X de tamanho (n_samples, n_features).
+
+        Args:
+            X (np.ndarray): Atributos, shape (n_samples, n_features).
+
+        Returns:
+            np.ndarray: Valores estimados, shape (n_samples,).
+        """
+        if not self._fitted:
+            raise NotFittedError(f"{self.__class__.__name__} não foi ajustado ainda.")
+
+        X = verify_array(X)
+
+        if X.shape[1] != self.n_features_in_:
+            raise ValueError(
+                f"Número de features difere: esperado {self.n_features_in_}, obtido {X.shape[1]}."
+            )
+
+        return X @ self.coef_ + self.intercept_
 
