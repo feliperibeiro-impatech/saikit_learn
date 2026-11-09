@@ -4,6 +4,9 @@ class ClassificationMetrics():
     def __init__(self, y_true : np.ndarray, y_pred : np.ndarray, labels : list = None, sample_weights : np.ndarray = None):
         if labels is None:
             labels = np.unique(np.concatenate((y_true, y_pred)))
+        unknown = np.setdiff1d(np.concatenate((y_true, y_pred)), labels)
+        if unknown.size > 0:
+            raise ValueError(f"y_true/y_pred contêm valores ausentes em labels: {unknown.tolist()}.")
         label_to_index = {label: i for i, label in enumerate(labels)}
         self.labels = labels
         if y_true.ndim != 1 or y_pred.ndim != 1:
@@ -44,6 +47,8 @@ class ClassificationMetrics():
         sample_weights = self.sample_weights
         n = len(y_true)
         w = sample_weights.sum()
+        if measure not in ("accuracy", "precision", "recall", "f1"):
+            raise ValueError
         if measure == "accuracy":
                     s = 0
                     for i in range(n):
@@ -57,9 +62,13 @@ class ClassificationMetrics():
         tp = np.diag(matrix)
         fn = matrix.sum(axis = 1) - tp
         fp = matrix.sum(axis = 0) - tp
+        if average not in ("binary", "micro", "macro"):
+            raise ValueError
         if average == "binary":
             if len(self.labels) != 2:
                 raise ValueError("average='binary' exige duas classes.")
+            if not isinstance(pos_label, (int, np.integer)):
+                raise TypeError("pos_label deve ser um indice de labels")
             tp = tp[pos_label]
             fn = fn[pos_label]
             fp = fp[pos_label]
@@ -75,16 +84,20 @@ class ClassificationMetrics():
             elif measure == "f1":
                 score = np.divide(2 * tp, 2 * tp + fp + fn, out = np.zeros_like(tp, dtype = float), where = (2 * tp + fp + fn) != 0)
             return np.mean(score)
+        if tp == 0:
+            return 0
         if measure == "precision":
             return tp / (tp + fp)
-        if measure == "recall":
+        elif measure == "recall":
             return tp / (tp + fn)
-        if measure == "f1":
+        elif measure == "f1":
             return 2 * tp / (2 * tp + fp + fn)
 
     def loss(self, normalize = True) -> float:
         y_true = self.y_true
         y_prob = self.y_pred
+        if np.any((y_prob < 0) | (y_prob > 1)):
+            raise ValueError
         sample_weights = self.sample_weights
         loss = -np.sum(sample_weights * (y_true * np.log(y_prob) + (1 - y_true) * np.log(1 - y_prob)))
         if normalize:
