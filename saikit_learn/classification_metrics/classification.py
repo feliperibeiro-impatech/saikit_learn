@@ -7,41 +7,46 @@ class ClassificationMetrics():
         self.sample_weights = sample_weights
         self.labels = labels
 
-    def score(self, measure, average = "binary"):
-        if measure == "f1":
-            pass
-        if measure == "precision":
-            pass
-        if measure == "recall":
-            pass
+    def confusion_matrix(self, normalize = "None"):
+        y_true = self.y_true
+        y_pred = self.y_pred
+        l = len(self.labels)
+        matrix = np.zeros((l,l), dtype = int)
+        np.add.at(matrix, (y_true, y_pred), 1)
+        if normalize == "lines":
+            s = matrix.sum(axis = 1, keepdims = True)
+        elif normalize == "columns":
+            s = matrix.sum(axis = 0, keepdims = True)
+        elif normalize == "all":
+            s = len(y_true)
+        else:
+            return matrix
+        matrix = np.divide(matrix, s, out = np.zeros_like(matrix, dtype=float), where=np.asarray(s) != 0)
+        return matrix
 
-    def accuracy(self, matrix = True, normalize = None):
+    def score(self, measure, average = "binary", normalize = True):
         y_true = self.y_true
         y_pred = self.y_pred
         n = len(y_true)
-        l = len(self.labels)
-        if matrix == False:
-            s = 0
-            for i in range(n):
-                if y_true[i] == y_pred[i]:
-                    s = s + 1
-            if normalize == False:
-                return s
-            else:
-                return s / n
-        else:
-            matrix = np.zeros((l,l), dtype = int)
-            np.add.at(matrix, (y_true, y_pred), 1)
-            if normalize == "lines":
-                s = matrix.sum(axis = 1, keepdims = True)
-            elif normalize == "columns":
-                s = matrix.sum(axis = 0, keepdims = True)
-            elif normalize == False:
-                return matrix
-            else:
-                s = n
-            matrix = np.divide(matrix, s, out = np.zeros_like(matrix, dtype=float), where=np.asarray(s) != 0)
-            return matrix
+        if measure == "accuracy":
+                    s = 0
+                    for i in range(n):
+                        if y_true[i] == y_pred[i]:
+                            s = s + 1
+                    if normalize:
+                        return s / n
+                    else:
+                        return s
+        matrix = self.confusion_matrix()
+        tp = matrix[1][1]
+        fn = matrix[1][0]
+        fp = matrix[0][1]
+        if measure == "precision":
+            return tp / (tp + fp)
+        if measure == "recall":
+            return tp / (tp + fn)
+        if measure == "f1":
+            return 2 * tp / (2 * tp + fp + fn)
 
     def loss(self, normalize = True, custom = False) -> float:
         if custom == True:
@@ -58,5 +63,9 @@ class ClassificationMetrics():
                 return loss / n
 
 if __name__ == "__main__":
-    loss = ClassificationMetrics([0, 0, 1, 1], [0.25, 0.75, 0.25, 0.75])
+    y_true = [0, 0, 1, 1]
+    loss = ClassificationMetrics(y_true, [0.25, 0.75, 0.25, 0.75])
     print(loss.loss())
+    score = ClassificationMetrics(y_true, [0, 0, 0, 0], labels = [0, 1])
+    matrix = score.confusion_matrix()
+    print(matrix)
