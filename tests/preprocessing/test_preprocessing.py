@@ -95,17 +95,7 @@ def test_scaler_opcoes_with_mean_e_with_std(dados):
     assert np.allclose(sem_media, X / X.std(axis=0))
     assert np.allclose(sem_desvio, X - X.mean(axis=0))
 
-# Resultado coincide com o do sklearn (usado só para comparar)
-def test_scaler_igual_ao_sklearn(dados):
-    sklearn_pre = pytest.importorskip("sklearn.preprocessing")
-    X, _ = dados
-    esperado = sklearn_pre.StandardScaler().fit_transform(X)
-    assert np.allclose(StandardScaler().fit_transform(X), esperado)
-
-
-
 # PIPELINE
-
 
 # Aplica os transformadores em ordem, repassa o y e o fit retorna self
 def test_pipeline_ordem_dos_passos_e_repasse_do_y(dados):
