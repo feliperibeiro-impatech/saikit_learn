@@ -206,6 +206,22 @@ class PCA:
     return Z @ self.components_.T + self.mean_ 
   
   def plot_eigen_values(self, tol=0.05, show=True ):
+    """Plota o scree plot e sugere d pelo método do cotovelo.
+    
+    O cotovelo é o in[icio do platô: o primeiro componente a partir do qual todas as quedas 
+    entre autovalores consecutivos, relativas ao maior autovalor, são menores que 'tol'.
+
+    Args:
+        tol (float): limiar de queda relativa que define o platô. Defaults to 0.05.
+        show (bool): se True, exibe a figura com plt.show(). Defaults to True.
+
+    Raises:
+        ValueError: se 'tol' não pertencer ao intervalo (0, 1).
+        ValueError: se os dados tiverem menos de três atributos.
+
+    Returns:
+        int: número de componentes sugerido pelo método do cotovelo.
+    """
     import matplotlib.pyplot as plt
     from matplotlib.ticker import MaxNLocator
     
@@ -220,14 +236,16 @@ class PCA:
     
     eig = self.eigenvalues_
     
+    # queda relativa entre autovalores consecutivos 
     falls = (eig[:-1] - eig[1:]) / eig[0]
     
+    # maior queda de i em diante (máximo acumulado de trás para frente)
     maximum_fall = np.maximum.accumulate(falls[::-1])[::-1]
     
     candidates = np.flatnonzero(maximum_fall < tol)
     
     if candidates.size == 0:
-      d = D
+      d = D # sem cotovelo claro: mantpem todos os componentes
     else:
       d = max(1, int(candidates[0]))
     
