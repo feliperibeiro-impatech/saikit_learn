@@ -92,6 +92,7 @@ class PCA:
         X (array-like): base de dados com shape (n_amostras, n_atributos).
 
     Raises:
+        ValueError: se 'proporcao' não estiver no intervalo (0, 1].
         ValueError: se 'n_components' não for None nem um inteiro.
         ValueError: se 'n_components' não estiver entre 1 e o número de atributos de 'X'.
         ValueError: se o cálculo da matriz de covariância produzir valores não finitos.
