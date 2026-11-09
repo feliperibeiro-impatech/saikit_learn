@@ -1,5 +1,5 @@
 from saikit_learn.regression.utils.validacao import verify_array, verify_X_y, NotFittedError
-from saikit_learn.regression.minimos_quadrados import OLS
+from saikit_learn.regression.ols import OLS
 import numpy as np
 
 class PolReg:
@@ -64,7 +64,7 @@ class PolReg:
                 )
         X = verify_array(X)
         if self.n_features_in_ != X.shape[1]:
-            ValueError(
+            raise ValueError(
                 f'a dimensão das features distingue; necessário: {self.n_features_in_}; obtido: {X.shape[1]}'
             )
         return self.model_.predict(self._design(X))

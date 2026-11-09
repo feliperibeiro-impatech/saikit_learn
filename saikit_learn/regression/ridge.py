@@ -20,9 +20,9 @@ class Ridge:
             X (np.ndarray): Atributos de treino, de shape (n_samples, n_features).
             y (np.ndarray): Valores-alvo, de shape (n_samples,).
         """        
-        if isinstance(self.lmbd, bool):
+        if not isinstance(self.intercepto, bool):
             raise ValueError(
-                f'lambda deve ser um número; obtido: {type(self.lmbd)}'
+                f'intercepto deve ser booleano; obtido: {type(self.intercepto)}'
             )
 
         try:
@@ -33,7 +33,7 @@ class Ridge:
                 f'lambda deve ser um número; obtido: {type(self.lmbd)}'
             )
 
-        if not np.isfinite(lmbd) or isinstance(lmbd, bool) or lmbd < 0:
+        if not np.isfinite(lmbd) or isinstance(self.lmbd, bool) or self.lmbd < 0:
             raise ValueError(
                 f'lambda deve ser um número real não negativo; obtido: {self.lmbd}'
             )
@@ -55,6 +55,7 @@ class Ridge:
         self.coef_ = np.linalg.solve(Xprime.T @ Xprime + self.lmbd * np.eye(self.n_features_in_), Xprime.T @ yprime)
         self.intercept_ = float(y_mean - X_mean @ self.coef_) if self.intercepto else 0.0
         self._fitted = True
+
         return self
         
     def predict(self, X: np.ndarray) -> np.ndarray:

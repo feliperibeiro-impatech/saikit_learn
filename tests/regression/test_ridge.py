@@ -1,4 +1,4 @@
-from saikit_learn.regression.ridge import Ridge
+from saikit_learn.regression import Ridge
 from saikit_learn.regression.utils.validacao import NotFittedError
 import numpy as np
 import pytest

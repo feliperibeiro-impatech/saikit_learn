@@ -4,33 +4,14 @@ import numpy as np
 class LogisticRegression:
     """Regressão Logística treinada por Gradient Descent.
 
-    Com duas classes, treina um único classificador, que estima a probabilidade
-    da classe positiva (classes_[1]). Com mais de duas classes, treina um classificador 
-    binário por classe, que distingue essa classe de todas as demais (One Vs Rest).
-    Como o Gradient Descent é sensível à escala dos atributos, padronize X antes do fit
-
-    Cada classificador minimiza a Binary Cross-Entropy média, com penalidade
-    L2 opcional nos coeficientes (o intercepto não é penalizado):
-
-        J(w, b) = BCE(w, b) + (alpha / 2) * ||w||^2
-
-    No caso de ter mais de 2 classes, as probabilidades são os scores 
-    dos classificadores normalizados para somar 1. 
-
     Attributes:
         classes_ (np.ndarray): Classes vistas no treino, em ordem crescente.
-        coef_ (np.ndarray): Coeficientes dos classificadores, com shape
-            (n_classifiers, n_features). Cada linha é um classificador:
-            n_classifiers é 1 com duas classes e n_classes com mais de duas.
+        coef_ (np.ndarray): Coeficientes dos classificadores, com (n_classifiers, n_features).
         intercept_ (np.ndarray): Interceptos, com shape (n_classifiers,).
         n_features_in_ (int): Número de atributos vistos no fit.
         n_iter_ (np.ndarray): Iterações realizadas por cada classificador.
-        converged_ (np.ndarray): Indica se cada classificador atingiu o
-            critério de parada pelo gradiente antes de max_iter. Use
-            converged_.all() para saber se todos convergiram.
-        loss_history (list[list[float]]): Valor de J em cada iteração, uma
-            lista por classificador, calculado com os parâmetros anteriores
-            à atualização daquela iteração.
+        converged_ (np.ndarray): Indica se cada classificador atingiu o critério de parada pelo gradiente antes de max_iter. Use converged_.all() para saber se todos convergiram.
+        loss_history (list[list[float]]): Valor de J em cada iteração, uma lista por classificador, calculado com os parâmetros anteriores à atualização daquela iteração.
     """
 
     def __init__(self, learning_rate: float = 0.5, max_iter: int = 10000, tol: float = 1e-6, alpha: float = 0.0):
@@ -39,12 +20,8 @@ class LogisticRegression:
         Args:
             learning_rate (float): Taxa de aprendizado do Gradient Descent.
             max_iter (int): Número máximo de iterações de cada classificador.
-            tol (float): Tolerância para o critério de parada. O treino de
-                cada classificador termina quando a norma do gradiente fica
-                abaixo de tol.
-            alpha (float): Força da regularização L2. Com 0.0 (padrão), não há
-                regularização. Quanto maior o alpha, menor deve ser a
-                learning_rate para o treino não divergir.
+            tol (float): Tolerância para o critério de parada. O treino de cada classificador termina quando a norma do gradiente fica abaixo de tol.
+            alpha (float): Força da regularização L2. Com 0.0 (padrão), não há regularização. Quanto maior o alpha, menor deve ser a learning_rate para o treino não divergir.
         """
 
         if isinstance(learning_rate, bool) or not isinstance(learning_rate, (int, float, np.integer, np.floating)):
@@ -85,7 +62,14 @@ class LogisticRegression:
         self.loss_history = []
 
     def _sigmoid(self, z: np.ndarray) -> np.ndarray:
-        """Calcula a função sigmoid de forma numericamente estável."""
+        """Calcula a função sigmoid de forma numericamente estável.
+
+        Args:
+            z (np.ndarray): _description_
+
+        Returns:
+            np.ndarray: _description_
+        """   
 
         result = np.empty_like(z, dtype=np.float64)
 
@@ -109,8 +93,7 @@ class LogisticRegression:
     def _check_X(self, X: np.ndarray) -> np.ndarray:
         """Valida o tipo de X e o converte para float64.
 
-        Usada por fit e predict_proba para que os dois métodos aceitem e rejeitem
-        exatamente as mesmas entradas.
+        Usada por fit e predict_proba para que os dois métodos aceitem e rejeitem exatamente as mesmas entradas.
 
         Args:
             X (np.ndarray): Matriz de atributos.
@@ -182,8 +165,7 @@ class LogisticRegression:
     def fit(self, X: np.ndarray, y: np.ndarray):
         """Ajusta o modelo aos dados de treino.
 
-        Com duas classes, treina um classificador para a classe positiva
-        (classes_[1]). Com mais de duas, treina um por classe (One-vs-Rest).
+        Com duas classes, treina um classificador para a classe positiva (classes_[1]). Com mais de duas, treina um por classe (One-vs-Rest).
 
         Args:
             X (np.ndarray): Matriz de atributos.
