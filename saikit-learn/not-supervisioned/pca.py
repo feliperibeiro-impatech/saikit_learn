@@ -100,6 +100,9 @@ class PCA:
     Returns:
         PCA: a própria instância ajustada ('self')
     """
+    if not 0 < self.proporcao <= 1:
+      raise ValueError('A proporção de variância explicada deve estar no intervalo (0,1]') 
+    
     X = self._valide_matrix(X)
     N, D = X.shape
     
