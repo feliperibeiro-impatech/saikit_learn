@@ -17,9 +17,14 @@ readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
 dynamic = ["version", "description"]
-dependencies = ["sympy", "matplotlib", "numpy"]
+dependencies = ["numpy"]
 requires-python = ">=3.8"
 
 [project.urls]
-Home = "https://github.com/feliperibeiro-impatech/saikit-learn.git"
+Repository = "https://github.com/feliperibeiro-impatech/saikit_learn"
 
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
