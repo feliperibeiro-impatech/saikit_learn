@@ -197,10 +197,26 @@ class DecisionTreeClassifier:
 
     @staticmethod
     def _classification_error(p: np.ndarray) -> np.ndarray:
+        """Erro de classificação
+
+        Args:
+            `p` (np.ndarray): Vetor das probabilidades de `1` até `k`.
+
+        Returns:
+            `classification_error` (np.ndarray): Vetores de erros de classificação.
+        """
         return 1 - np.max(p, axis=-1)
 
     @staticmethod
     def _entropy(p: np.ndarray) -> np.ndarray:
+        """Entropia
+
+        Args:
+            p (np.ndarray): Vetor das probabilidades de `1` até `k`.
+
+        Returns:
+            entropy (np.ndarray): Vetor de entropias para cada `k`.
+        """
         safe = np.where(p > 0, p, 1.0)
         return -np.sum(p * np.log2(safe), axis=-1)
 
@@ -233,11 +249,7 @@ class DecisionTreeClassifier:
 
     @property
     def depth(self) -> int:
-        """Obtém a profundidade da árvore de decisão.
-
-        Returns:
-            depth: Profundidade da árvore de decisão.
-        """
+        """Obtém a profundidade da árvore de decisão."""
         self._check_fitted()
 
         def rec(node: TreeNode):

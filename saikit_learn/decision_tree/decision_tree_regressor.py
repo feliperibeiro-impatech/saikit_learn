@@ -3,6 +3,7 @@ import numpy as np
 from ._tree_node import TreeNode
 from typing import Optional
 
+
 class DecisionTreeRegressor:
     def __init__(
         self,
@@ -62,10 +63,10 @@ class DecisionTreeRegressor:
         node.right = self._build_tree(X[~mask], y[~mask], depth=depth + 1)
         return node
 
-
     @staticmethod
     def _impurity(y: np.ndarray) -> float:
         """Q(R) = (1/n) Σ (y_i - ȳ)²  (variância dentro do nó).
+
         Args:
             `y` (np.ndarray): Dados observados
 
@@ -225,5 +226,3 @@ class DecisionTreeRegressor:
             return 0 if node.is_leaf else 1 + max(rec(node.left), rec(node.right))
 
         return rec(self.tree)
-
-    

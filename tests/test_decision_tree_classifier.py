@@ -9,7 +9,6 @@ def dataset():
     y = np.array([0, 0, 1, 1])
     return X, y
 
-
 def test_tree_depth(dataset):
     """Testa se a profundidade da árvore de decisão está correta."""
     X, y = dataset
