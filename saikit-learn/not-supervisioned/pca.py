@@ -54,6 +54,11 @@ class PCA:
     return X
   
   def _verify_PCA(self):
+    """Verifica se o PCA já foi ajustado aos dados.
+
+    Raises:
+        ValueError: se o PCA não foi ajustado, ou seja, se o método fit ainda não executado antes.
+    """
     if self.n_components_ is None:
       raise ValueError('O PCA ainda não foi ajustado. Execute o método fit primeiro')
   
