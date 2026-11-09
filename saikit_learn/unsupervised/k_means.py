@@ -22,6 +22,18 @@ class KMeans:
         Returns:
           k_means (KMeans):
         """
+        X = np.asarray(X, dtype=float)
+
+        if self.n_clusters is None or self.n_clusters <= 0:
+            raise ValueError("`n_clusters` deve ser um natural.")
+        
+        n_samples = X.shape[0]
+        if n_samples < self.n_clusters:
+            raise ValueError(
+                f"O número de amostras ({n_samples}) não pode ser menor que",
+                f"o número de cluster ({self.n_clusters})"
+            )
+
         self.centroids = X[np.random.choice(X.shape[0], self.n_clusters, replace=False)]
 
         for _ in range(self.max_iterations):
