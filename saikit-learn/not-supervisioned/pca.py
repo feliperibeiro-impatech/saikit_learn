@@ -62,7 +62,19 @@ class PCA:
     if self.n_components_ is None:
       raise ValueError('O PCA ainda não foi ajustado. Execute o método fit primeiro')
   
+  
   def resolve_d(self):
+    """Determina o menor número de componentes que atinge a proporção de variância desejada.
+
+    Raises:
+        ValueError: se a proporção não pertencer ao intervalo (0, 1].
+        ValueError: se a proporção de variância explicada ainda não foi calculada, 
+                    ou seja, o método fit ainda não foi executado.
+
+    Returns:
+        int: menor número de componentes principais cuja variância explicada acumulada é maior 
+        ou igual a 'proporcao'. 
+    """
     if not 0 < self.proporcao <= 1:
       raise ValueError('A proporção deve pertencer ao intervalo (0,1]')
     
@@ -71,7 +83,7 @@ class PCA:
     
     cumulative_sum = np.cumsum(self.explained_variance_ratio_)
     
-    return np.searchsorted(cumulative_sum, self.proporcao) + 1
+    return int(np.searchsorted(cumulative_sum, self.proporcao) + 1)
    
   def fit(self, X):
     X = self._valide_matrix(X)
