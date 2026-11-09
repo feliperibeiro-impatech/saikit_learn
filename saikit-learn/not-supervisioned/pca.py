@@ -140,7 +140,7 @@ class PCA:
     self.n_features_inicial_ = D
     self.eigenvalues_ = eigen_values
     self.n_components_ = d
-    self.explained_variance_ = eigen_values[:, :d]
+    self.explained_variance_ = eigen_values[:d]
     self.components_ = eigen_vectors[:, :d]
     
     return self
