@@ -1,12 +1,11 @@
 import numpy as np
 
 import pytest
-from saikit_learn.not_supervised import KMeans
-
+from saikit_learn.unsupervised import KMeans
 
 @pytest.fixture
 def dataset():
-    return np.array([[1, 1], [3, 1], [2.3], [12, 13], [12, 15], [15, 15]])
+    return np.array([[1, 1], [3, 1], [2, 3], [12, 13], [12, 15], [15, 15]])
 
 def test_kmeans_centroids(dataset):
     """
@@ -38,10 +37,11 @@ def test_kmeans_labels(dataset):
     assert (labels[0] == labels[1]) and (labels[0] != labels[3])
 
 
-def test_kmeans_elbow_k_value():
+def test_kmeans_elbow_k_value(dataset):
     """
     Testa se o método do cotovelo alcança o valor ótimo de n_clusters.
     """
+    X = dataset
     np.random.seed(42)
     k_means = KMeans(n_clusters=3)
     best_k = k_means.find_best_k_value(X, 5, method="elbow")
@@ -49,7 +49,7 @@ def test_kmeans_elbow_k_value():
     assert best_k == 2
 
 
-def test_kmeans_silhouette_score():
+def test_kmeans_silhouette_score(dataset):
     """
     Testa se o método com silhouette score alcança o valor ótimo de n_clusters.
     """

@@ -2,14 +2,24 @@ import numpy as np
 from typing import Optional
 
 class KMeans:
-    def __init__(self, n_clusters: Optional[int], max_iterations=100):
+    def __init__(
+            self, 
+            n_clusters: Optional[int],
+            max_iterations = 100,
+            auto_k_method: Optional[str] = "silhouette",
+            max_k: Optional[int] = 10
+        ):
         """
         Args:
           `n_clusters` (int): Número de Clusters (hiperparâmetro).
           `max_iterations` (int): Número de iterações máximo que o algoritmo fará para obter os centróides.
         """
-        self.max_iterations = max_iterations
         self.n_clusters = n_clusters
+        self.max_iterations = max_iterations
+        self.auto_k_method = auto_k_method
+        self.max_k = max_k
+
+        self.n_clusters_ = None
         self._inertia = None
         self.centroids = None
 
@@ -24,17 +34,23 @@ class KMeans:
         """
         X = np.asarray(X, dtype=float)
 
-        if self.n_clusters is None or self.n_clusters <= 0:
-            raise ValueError("`n_clusters` deve ser um natural.")
+        if self.n_clusters is None:
+            self.n_clusters_ = self.find_best_k_value(
+                X, max_k=self.max_k, method=self.auto_k_method
+            )
+        else:
+            if self.n_clusters <= 0:
+                raise ValueError("`n_clusters` deve ser um natural.")
+            self.n_clusters_ = self.n_clusters
         
         n_samples = X.shape[0]
-        if n_samples < self.n_clusters:
+        if n_samples < self.n_clusters_:
             raise ValueError(
                 f"O número de amostras ({n_samples}) não pode ser menor que",
                 f"o número de cluster ({self.n_clusters})"
             )
 
-        self.centroids = X[np.random.choice(X.shape[0], self.n_clusters, replace=False)]
+        self.centroids = X[np.random.choice(X.shape[0], self.n_clusters_, replace=False)]
 
         for _ in range(self.max_iterations):
             labels = self._assign_labels(X)
@@ -143,6 +159,9 @@ class KMeans:
         Returns:
             `k` (int): Valor ótimo de `n_clusters`.
         """
+        n_samples = X.shape[0]
+        max_k = min(max_k, n_samples)
+
         match method:
             case "silhouette":
                 k_values = list(range(2, max_k + 1))
@@ -233,8 +252,13 @@ class KMeans:
             Returns:
                 `centroids` (np.ndarray): Valores dos centroides de cada cluster.
         """
-        new_centroids = np.array(
-            [X[labels == i].mean(axis=0) for i in range(self.n_clusters)]
-        )
+        new_centroids = np.zeros_like(self.centroids)
+
+        for i in range(self.n_clusters_):
+            cluster_points = X[labels == i]
+            if len(cluster_points) > 0:
+                new_centroids[i] = cluster_points.mean(axis = 0)
+            else:
+                new_centroids[i] = self.centroids[i]
 
         return new_centroids
