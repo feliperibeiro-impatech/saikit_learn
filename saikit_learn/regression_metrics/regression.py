@@ -2,7 +2,7 @@ import numpy as np
 import typing as tp
 import numpy.typing as npt
 from numpy.typing import NDArray
-from _validation import validate_regression_inputs
+from saikit_learn.regression_metrics._validation import validate_regression_inputs
 
 """ ANOTAÇÕES E DUVIDAS -- EM ANDAMENTO - NÃO ESQUECER DE REMOVER AO FINAL
 CONVENÇÃO GRUPO: x = y_true e y= y_pred 
