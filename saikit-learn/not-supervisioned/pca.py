@@ -145,7 +145,7 @@ class PCA:
     
     return self
   
-  def transform(self):
+  def transform(self, X):
     self._verify_PCA()
     X = self._valide_matrix(X)
     
