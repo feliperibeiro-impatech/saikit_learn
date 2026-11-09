@@ -99,7 +99,7 @@ def R2(X: NDArray[np.float64], y_pred: NDArray[np.float64]) -> float:
         raise ValueError("A variância dos valores reais é zero, não é possível calcular R²")
     return float(1 - (rss / tss))
 
-def R2_ajustado(X: NDArray[np.float64], y_pred: NDArray[np.float64], p: int) -> float:
+def R2_ajusted(X: NDArray[np.float64], y_pred: NDArray[np.float64], p: int) -> float:
     """
     Calcula o coeficiente de determinação ajustado (R² ajustado) entre os valores reais e os valores previstos.
 
@@ -122,6 +122,14 @@ def R2_ajustado(X: NDArray[np.float64], y_pred: NDArray[np.float64], p: int) -> 
         raise ValueError("O número de observações deve ser maior que p + 1")
     return float(1-(1-r2)*((n-1)/(n-p-1)))
 
-def RSE(): #DAVI
+def RSE():
+
+
+
+
+
+
+
+
     pass
 
