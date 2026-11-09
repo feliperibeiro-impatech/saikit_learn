@@ -13,15 +13,12 @@ class StandardScaler:
         self.with_mean = with_mean
         self.with_std = with_std
 
-    def fit(self, X: np.ndarray, y: np.ndarray | None = None) -> StandardScaler:
+    def fit(self, X: np.ndarray, y: np.ndarray | None = None):
         """Estima a média e o desvio padrão de cada coluna a partir de X.
 
         Args:
             X: Matriz de dados com shape (n_amostras, n_features).
             y: Ignorado, existe apenas para compatibilidade com o Pipeline.
-
-        Returns:
-            A própria instância ajustada.
         """
         X = np.asarray(X, dtype=float)
         self.mean_ = X.mean(axis=0) if self.with_mean else np.zeros(X.shape[1])
@@ -78,15 +75,12 @@ class Pipeline:
         """
         self.steps = steps
 
-    def fit(self, X: np.ndarray, y: np.ndarray | None = None) -> Pipeline:
+    def fit(self, X: np.ndarray, y: np.ndarray | None = None):
         """Ajusta cada transformador em sequência e depois o estimador final.
 
         Args:
             X: Matriz de dados com shape (n_amostras, n_features).
             y: Vetor alvo com shape (n_amostras,), repassado às etapas.
-
-        Returns:
-            A própria instância ajustada.
         """
         for _, step in self.steps[:-1]:
             X = step.fit_transform(X, y)
