@@ -86,6 +86,20 @@ class PCA:
     return int(np.searchsorted(cumulative_sum, self.proporcao) + 1)
    
   def fit(self, X):
+    """Ajusta o PCA aos dados, calculando a média, os autovalores, os componentes principais e a variãncia explicada. 
+
+    Args:
+        X (array-like): base de dados com shape (n_amostras, n_atributos).
+
+    Raises:
+        ValueError: se 'n_components' não for None nem um inteiro.
+        ValueError: se 'n_components' não estiver entre 1 o número de atributos de 'X'.
+        ValueError: se o cálculo da matriz de covariância produzir valores não finitos.
+        ValueError: se a variância total dos dados for igual a zero.
+
+    Returns:
+        PCA: a própria instância ajustada ('self')
+    """
     X = self._valide_matrix(X)
     N, D = X.shape
     
