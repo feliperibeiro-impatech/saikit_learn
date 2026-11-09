@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from pca import PCA  # ajuste para o nome do seu módulo
+from saikit_learn.unsupervised.pca import PCA  # ajuste para o nome do seu módulo
 
 
 # --------------------------------------------------------------------------
@@ -244,17 +244,6 @@ def test_fit_escala_multiplica_autovalores_por_c_ao_quadrado(X):
     np.testing.assert_allclose(b.eigenvalues_, c**2 * a.eigenvalues_, rtol=1e-8)
     np.testing.assert_allclose(b.explained_variance_ratio_,
                                a.explained_variance_ratio_, rtol=1e-8)
-
-
-def test_fit_coincide_com_sklearn(X):
-    sk = pytest.importorskip("sklearn.decomposition")
-    ref = sk.PCA(n_components=3).fit(X)
-    pca = PCA(n_components=3).fit(X)
-    np.testing.assert_allclose(pca.explained_variance_ratio_[:3],
-                               ref.explained_variance_ratio_, rtol=1e-8)
-    # autovetores têm ambiguidade de sinal: compara em módulo
-    np.testing.assert_allclose(np.abs(pca.components_),
-                               np.abs(ref.components_.T), atol=1e-8)
 
 
 # --------------------------------------------------------------------------

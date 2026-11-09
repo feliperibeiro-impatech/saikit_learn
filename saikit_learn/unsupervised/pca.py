@@ -124,9 +124,9 @@ class PCA:
     
     eigen_values, eigen_vectors = np.linalg.eigh(S)
     
-    order = np.argsort(eigen_values)[::-1]
-    eigen_values = eigen_values[order]
-    eigen_vectors = eigen_vectors[:, order]
+    descending_order = np.argsort(eigen_values)[::-1]
+    eigen_values = eigen_values[descending_order]
+    eigen_vectors = eigen_vectors[:, descending_order]
     
     total_variance = np.sum(eigen_values)
     
