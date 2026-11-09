@@ -1,3 +1,3 @@
-from saikit_learn.model_selection.hyperparameters import GridSearchCV
+from saikit_learn.model_selection.GridSearchCV import GridSearchCV
 
 __all__ = ["GridSearchCV"]

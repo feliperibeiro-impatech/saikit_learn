@@ -2,7 +2,7 @@ import numpy as np
 from saikit_learn.resampling.cross_validation import cross_validation
 
 class GridSearchCV():
-    def __init__(self, estimator, param_grid : dict, scoring = None, refit = True, cv = 5):
+    def __init__(self, estimator, param_grid : dict, scoring, refit = True, cv = 5):
         keys = list(param_grid.keys())
         values = list(param_grid.values())
         n_params = []
