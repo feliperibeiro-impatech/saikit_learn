@@ -27,6 +27,19 @@ class PCA:
   
   @staticmethod
   def _valide_matrix(X):
+    """Converte a entrada em um array NumPy e verifica o formato e os valores presentes.
+
+    Args:
+        X (array-like): base de dados com shape (n_amostras, n_atriutos).
+
+    Raises:
+        ValueError: se a entrada não for bidimensional.
+        ValueError: se a entrada não tiver pelo menos uma linha e uma coluna.
+        ValueError: se a entrada contiver NaN ou valores infinitos.
+
+    Returns:
+        NDArray: matriz de dados convertida em array NumPy (dtype float).
+    """
     X = np.asarray(X, dtype=float)
     
     if X.ndim != 2:
