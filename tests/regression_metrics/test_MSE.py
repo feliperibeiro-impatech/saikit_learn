@@ -1,7 +1,7 @@
 import numpy as np
 import pytest 
 
-from regression import MSE
+from saikit_learn.regression_metrics.regression import MSE
 
 def test_MSE_0_perfect_prediction():
     """

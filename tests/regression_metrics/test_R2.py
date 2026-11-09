@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from regression import R2
+from saikit_learn.regression_metrics.regression import R2
 
 
 def test_R2_1_perfect_prediction():

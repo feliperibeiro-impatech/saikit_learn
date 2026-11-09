@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from regression import MAE
+from saikit_learn.regression_metrics.regression import MAE
 
 def test_MAE_1_perfect_prediction():
     """

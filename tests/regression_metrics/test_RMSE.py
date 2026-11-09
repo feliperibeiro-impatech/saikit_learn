@@ -1,7 +1,7 @@
 import numpy as np
 import pytest 
 
-from regression import RMSE
+from saikit_learn.regression_metrics.regression import RMSE
 
 # já que esse método está baseado na função MSE, previamente testada, vamos apenas testar alguns casos para ver se está funcionando adequadamente. 
 

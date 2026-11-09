@@ -1,7 +1,7 @@
 
 import numpy as np
 import pytest
-from regression import RSS
+from saikit_learn.regression_metrics.regression import RSS
 
 def test_RSS_1_perfect_prediction():
     """

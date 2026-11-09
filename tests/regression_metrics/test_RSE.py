@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from regression import RSE
+from saikit_learn.regression_metrics.regression import RSE
 
 def test_RSE_1_perfect_prediction():
     """
