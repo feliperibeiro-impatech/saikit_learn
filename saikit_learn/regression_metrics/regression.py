@@ -4,24 +4,6 @@ import numpy.typing as npt
 from numpy.typing import NDArray
 from saikit_learn.regression_metrics._validation import validate_regression_inputs
 
-""" ANOTAÇÕES E DUVIDAS -- EM ANDAMENTO - NÃO ESQUECER DE REMOVER AO FINAL
-CONVENÇÃO GRUPO: x = y_true e y= y_pred 
-VERIFICAR CONVENÇÃO DE Y_PRED SE É SOMENTE Y MESMO.
-Docstring em portugues, assim como mensagens de erro 
-Funções e variáveis em ingles. 
-
-Avaliar se deixo nome das funções abreviado ou completo. Ver como andre alinhou o dele 
-
-PRECISO GARANTIR ALGUMAS VALIDAÇÕES DE ENTRADA, COMO MESMO TAMANHO, NÃO VAZIO E ETC!!! ACHO QUE ESSAS
-VALIDAÇÕES DEVEM SE REPETIR PARA AS DEMAIS MÉTRICAS... TALVEZ SEJA INTERESSANTE SEGMENTAR ESSES TESTES 
-
-Tem como parametrizar os testes de validação, sem precisar ficar repetindo o mesmo teste para cada métrica.... !!! Bom ajuste!
-
-"""
-
-
-
-
 def MSE(X: NDArray[np.float64], y_pred: NDArray[np.float64]) -> float:
     """
     Calcula o erro quadrático médio (MSE) entre os valores reais e os valores previstos.
