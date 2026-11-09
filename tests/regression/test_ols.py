@@ -1,4 +1,4 @@
-from saikit_learn.regression.minimos_quadrados import OLS
+from saikit_learn.regression.ols import OLS
 from saikit_learn.regression.utils.validacao import NotFittedError
 import numpy as np
 import pytest
