@@ -1,17 +1,29 @@
 import numpy as np
 
 class PCA:
+  """Análise dos Componentes Principais por meio da Matriz de Covariância
+  """
+  
   def __init__(self, n_components=None, proporcao=0.95):
+    """Inicializa as instâncias do objeto da classe
+
+    Args:
+        n_components (int): número de componentes que se deseja projetar os dados. Defaults to None.
+        proporcao (float): proporção de variância expicada que se deseja usar. Defaults to 0.95.
+    """
+    
+    # Parâmetros definidos pelo usuário 
     self.n_components = n_components
     self.proporcao = proporcao
     
-    self.mean_ = None
-    self.n_features_inicial_ = None
-    self.n_components_ = None
-    self.components_ = None
-    self.eigenvalues_ = None
-    self.explained_variance_ = None
-    self.explained_variance_ratio_ = None
+    # Parâmetros aprendidos 
+    self.mean_ = None  # média dos dados
+    self.n_features_inicial_ = None  # dimensão inicial (D) 
+    self.n_components_ = None  # número de componentes determinada pelo modelo (d)
+    self.components_ = None  # componentes determinadas pela decomposição da matriz 
+    self.eigenvalues_ = None  # autovalores da matriz de covariancia 
+    self.explained_variance_ = None # variância explicada 
+    self.explained_variance_ratio_ = None  # proporção de variância explicada
   
   @staticmethod
   def _valide_matrix(X):
