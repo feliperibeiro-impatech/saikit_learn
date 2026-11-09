@@ -3,13 +3,57 @@ import numpy as np
 
 class Lasso:
     def __init__(self, lmbd : float = 1.0, intercepto : bool = True):
+        """Regressão Lasso por descida por coordenadas.
+
+        Args:
+            lmbd (float, opcional): Força da penalidade L1 (>= 0).. Padrão é 1.0.
+            intercepto (bool, opcional): Se True, ajusta um intercepto não penalizado. Padrão é True.
+        """        
         self.lmbd = lmbd
         self.intercepto = intercepto
         self._fitted = False
 
-    def fit(self, X, y):
-        pass
+    def fit(self, X: np.ndarray, y: np.ndarray):
+        """Treina o modelo dos X de acordo com os valores y dados.
 
+        Args:
+            X (np.ndarray): Atributos com tamanho (n_samples, n_features)
+            y (np.ndarray): Valores alvos de tamanho (n_sample)
+        """        
+        X, y = verify_X_y(X, y)
+        n, d = X.shape
+        self.n_features_in_ = d
+
+        if self.intercepto:
+            x_mean, y_mean = X.mean(axis=0), y.mean()
+        else:
+            x_mean, y_mean = np.zeros(d), 0.0
+        Xc, yc = X - x_mean, y - y_mean
+
+        col_sq = (Xc ** 2).sum(axis=0) / n
+        w = np.zeros(d)
+        residual = yc.copy()
+
+        for _ in range(1000):
+            w_original = w.copy()
+            for j in range(d):
+                if col_sq[j] == 0:
+                    continue
+                w_old = w[j]
+                rho = Xc[:, j] @ residual / n + col_sq[j] * w_old
+                w_new = np.sign(rho) * max(abs(rho) - self.lmbd, 0.0) / col_sq[j]
+                if w_new != w_old:
+                    residual -= Xc[:, j] * (w_new - w_old)
+                    w[j] = w_new
+            if np.allclose(w, w_original, atol=1e-8, rtol=0):
+                break
+
+        self.coef_ = w
+        self.intercept_ = float(y_mean - x_mean @ w)
+        self._fitted = True
+
+        return self
+    
     def predict(self, X : np.ndarray):
         pass
 
