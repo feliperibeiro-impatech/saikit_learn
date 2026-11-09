@@ -32,6 +32,19 @@ class DecisionTreeRegressor:
     def train(self, X: np.ndarray, y: np.ndarray) -> "DecisionTreeRegressor":
         return self.fit(X, y)
 
+    def fit(self, X: np.ndarray, y: np.ndarray) -> "DecisionTreeRegressor":
+        X = np.asarray(X, dtype=float)
+        y = np.asarray(y, dtype=float)
+
+        if X.ndim != 2:
+            raise ValueError("as amostras X deve ser em duas dimensões (n_amostras, n_features)")
+        if y.ndim != 1:
+            raise ValueError("y deve ser 1D e ter o mesmo número de linhas que X")
+
+        self.n_features = X.shape[1]
+        self.tree = self._build_tree(X, y, depth=0)
+        return self
+
     def _build_tree(self, X: np.ndarray, y: np.ndarray, depth: int) -> TreeNode:
         n = len(y)
         node_value = float(np.mean(y))
@@ -42,7 +55,7 @@ class DecisionTreeRegressor:
             return node
         if n < self.min_samples_split:
             return node
-        if node_impurity <= 1e-10:
+        if node_impurity <= 1e-12:
             return node
 
         split = self._get_best_split(X, y)
@@ -144,10 +157,15 @@ class DecisionTreeRegressor:
             `candidate_thresholds` (np.ndarray): Possíveis cortes.
         """
         if self.split_strategy == "median":
-            return np.array([np.median(xs_sorted)])
+            u = np.unique(xs_sorted)
+
+            if u.size == 0:
+                return np.empty(0)
+
+            index = len(u) / 2
+            return np.array([(u[index - 1] + u[index]) / 2])
 
         u = np.unique(xs_sorted)
-
         if u.size < 2:
             return np.empty(0)
 
@@ -161,7 +179,7 @@ class DecisionTreeRegressor:
 
         return node.value
 
-    def predict(self, X: np.ndarray, y: np.ndarray) -> float:
+    def predict(self, X: np.ndarray) -> float:
         """Prevê o R_m em que o x está situado.
 
         Args:
@@ -190,7 +208,7 @@ class DecisionTreeRegressor:
             `score` (float): Valor do score
         """
         y = np.asarray(y, dtype=float)
-        rss = np.sum((y - self._predict(X)) ** 2)
+        rss = np.sum((y - self.predict(X)) ** 2)
         tss = np.sum((y - np.mean(y)) ** 2)
 
         return float(1 - rss / tss) if tss > 0 else 0.0
@@ -221,7 +239,7 @@ class DecisionTreeRegressor:
             depth: Profundidade da árvore de decisão.
         """
         self._check_fitted()
-
+ 
         def rec(node: TreeNode):
             return 0 if node.is_leaf else 1 + max(rec(node.left), rec(node.right))
 
