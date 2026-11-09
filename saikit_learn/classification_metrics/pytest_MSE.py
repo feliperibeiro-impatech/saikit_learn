@@ -85,53 +85,53 @@ def test_MSE_8_constant_case():
     c = 4.0
     assert MSE((X * c),(y_pred * c)) == MSE(X, y_pred) * c * c
 
-# def test_MSE_8_empty_case():
-#     """
-#     Test the MSE function with empty arrays.
-#     The MSE should raise a ValueError when the input arrays are empty.
-#     """
-#     X = np.array([])
-#     y_pred = np.array([])
-#     with pytest.raises(ValueError):
-#         MSE(X, y_pred)
+def test_MSE_9_empty_case():
+    """
+    Test the MSE function with empty arrays.
+    The MSE should raise a ValueError when the input arrays are empty.
+    """
+    X = np.array([])
+    y_pred = np.array([])
+    with pytest.raises(ValueError):
+        MSE(X, y_pred)
 
-# def test_MSE_9_different_length_case():
-#     """
-#     Test the MSE function with arrays of different lengths.
-#     The MSE should raise a ValueError when the input arrays have different lengths.
-#     """
-#     X = np.array([1.0, 2.0])
-#     y_pred = np.array([1.0, 2.0, 3.0])
-#     with pytest.raises(ValueError):
-#         MSE(X, y_pred)
+def test_MSE_10_different_length_case():
+    """
+    Test the MSE function with arrays of different lengths.
+    The MSE should raise a ValueError when the input arrays have different lengths.
+    """
+    X = np.array([1.0, 2.0])
+    y_pred = np.array([1.0, 2.0, 3.0])
+    with pytest.raises(ValueError):
+        MSE(X, y_pred)
 
-# def test_MSE_10_non_numeric_case():
-#     """
-#     Test the MSE function with non-numeric input.
-#     The MSE should raise a TypeError when the input arrays contain non-numeric values.
-#     """
-#     X = np.array([1.0, 2.0, 'a'])
-#     y_pred = np.array([1.0, 2.0, 3.0])
-#     with pytest.raises(TypeError):
-#         MSE(X, y_pred)
+def test_MSE_11_non_numeric_case():
+    """
+    Test the MSE function with non-numeric input.
+    The MSE should raise a TypeError when the input arrays contain non-numeric values.
+    """
+    X = np.array([1.0, 2.0, 'a'])
+    y_pred = np.array([1.0, 2.0, 3.0])
+    with pytest.raises(TypeError):
+        MSE(X, y_pred)
 
-# def test_MSE_11_nan_case():
-#     """
-#     Test the MSE function with NaN values.
-#     The MSE should raise a ValueError when the input arrays contain NaN values.
-#     """
-#     X = np.array([1.0, 2.0, np.nan])
-#     y_pred = np.array([1.0, 2.0, 3.0])
-#     with pytest.raises(ValueError):
-#         MSE(X, y_pred)
+def test_MSE_12_nan_case():
+    """
+    Test the MSE function with NaN values.
+    The MSE should raise a ValueError when the input arrays contain NaN values.
+    """
+    X = np.array([1.0, 2.0, np.nan])
+    y_pred = np.array([1.0, 2.0, 3.0])
+    with pytest.raises(ValueError):
+        MSE(X, y_pred)
 
-# def test_MSE_12_inf_case():
-#     """
-#     Test the MSE function with infinite values.
-#     The MSE should raise a ValueError when the input arrays contain infinite values.
-#     """
-#     X = np.array([1.0, 2.0, np.inf])
-#     y_pred = np.array([1.0, 2.0, 3.0])
-#     with pytest.raises(ValueError):
-#         MSE(X, y_pred)
+def test_MSE_13_inf_case():
+    """
+    Test the MSE function with infinite values.
+    The MSE should raise a ValueError when the input arrays contain infinite values.
+    """
+    X = np.array([1.0, 2.0, np.inf])
+    y_pred = np.array([1.0, 2.0, 3.0])
+    with pytest.raises(ValueError):
+        MSE(X, y_pred)
 
