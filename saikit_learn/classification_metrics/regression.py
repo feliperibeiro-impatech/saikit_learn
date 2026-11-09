@@ -95,13 +95,32 @@ def R2(X: NDArray[np.float64], y_pred: NDArray[np.float64]) -> float:
     X, y_pred = validate_regression_inputs(X, y_pred)
     rss = RSS(X, y_pred)
     tss = np.sum((X - np.mean(X)) ** 2)
-    if tss == 0:
+    if tss == 0: #validação especifica de R2, para não dividir por zero 
         raise ValueError("A variância dos valores reais é zero, não é possível calcular R²")
     return float(1 - (rss / tss))
 
+def R2_ajustado(X: NDArray[np.float64], y_pred: NDArray[np.float64], p: int) -> float:
+    """
+    Calcula o coeficiente de determinação ajustado (R² ajustado) entre os valores reais e os valores previstos.
 
-def R2_ajustado(): #DAVI
-    pass
+    Parametros:
+    X (NDArray[np.float64]): Os valores reais.
+    y_pred (NDArray[np.float64]): Os valores previstos.
+    p (int): O número de variáveis independentes no modelo, sem o intercepto.
+
+    Retorno:
+    float: O coeficiente de determinação ajustado (R² ajustado).
+    """
+    X, y_pred = validate_regression_inputs(X, y_pred)
+    if not isinstance(p, (int, np.integer)) or isinstance(p, (bool, np.bool_)):
+        raise TypeError("p deve ser um número inteiro")
+    n = X.size
+    r2 = R2(X, y_pred)
+    if p < 0:
+        raise ValueError("O número de variáveis independentes deve ser positivo")
+    if n <= p + 1:
+        raise ValueError("O número de observações deve ser maior que p + 1")
+    return float(1-(1-r2)*((n-1)/(n-p-1)))
 
 def RSE(): #DAVI
     pass
