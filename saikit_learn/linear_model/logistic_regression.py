@@ -5,12 +5,8 @@ class LogisticRegression:
     """Regressão Logística binária treinada por Gradient Descent.
 
     Minimiza a Binary Cross-Entropy média, com penalidade L2 opcional nos
-    coeficientes (o intercepto não é penalizado):
+    coeficientes: J(w, b) = BCE(w, b) + (alpha / 2) * ||w||^2
 
-        J(w, b) = BCE(w, b) + (alpha / 2) * ||w||^2
-
-    O Gradient Descent é sensível à escala dos atributos, então padronize
-    X antes de ajustar o modelo.
 
     Attributes:
         classes_ (np.ndarray): As duas classes, em ordem crescente.
@@ -153,9 +149,7 @@ class LogisticRegression:
         if not np.isfinite(X).all():
             raise ValueError("X contém valores não finitos.")
 
-        # Todo o treino usa variáveis locais. Os atributos do modelo só
-        # são atribuídos no final, para que um fit que falha não deixe
-        # o modelo num estado inconsistente.
+        # Todo o treino usa variáveis locais. Os atributos do modelo só são atribuídos no final
         n_samples, n_features = X.shape
 
         classes = np.unique(y)
@@ -179,14 +173,14 @@ class LogisticRegression:
             probabilities = self._sigmoid(z)
 
             # Função objetivo J (entropia cruzada + penalidade L2) calculada
-            # com os parâmetros anteriores à atualização desta iteração.
+            # com os parâmetros anteriores dessa atualização desta iteração.
             loss = self._loss(y_binary, probabilities) + 0.5 * self.alpha * np.sum(coef ** 2)
             loss_history.append(loss)
 
             error = probabilities - y_binary
 
-            # A penalidade L2 soma alpha * coef ao gradiente dos
-            # coeficientes. O intercepto não é penalizado.
+            # A penalidade L2 soma alpha * coef ao gradiente dos coeficientes
+            # O intercepto não é penalizado
             gradient_coef = X.T @ error / n_samples + self.alpha * coef
 
             gradient_intercept = np.mean(error)
