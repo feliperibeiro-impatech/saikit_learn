@@ -181,6 +181,18 @@ class PCA:
   
   
   def inverse_transform(self, Z):
+    """Reconstrói aproximadamente os dados originais a partir da projeção.
+
+    Args:
+        Z (array-like): dados projetados com shape (n_amostras, n_components_).
+
+    Raises:
+        ValueError: se o número de colunas de 'Z' for diferente de 'n_components_'
+
+    Returns:
+        NDArray: matriz com shape (n_amostras, n_atributos) com os dados reconstruídos no espaço original. 
+        A reconstrução é exata apenas se todos os componentes forem mantidos.
+    """
     self._verify_PCA()
     Z = self._valide_matrix(Z)
     
