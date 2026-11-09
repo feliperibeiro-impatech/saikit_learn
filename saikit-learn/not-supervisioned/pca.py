@@ -169,6 +169,14 @@ class PCA:
   
   
   def fit_transform(self, X):
+    """Ajusta o PCA aos dados e os projeta no espaço das componentes principais;
+
+    Args:
+        X (array-like): base de dados com shape (n_amostras, n_atributos).
+
+    Returns:
+        NDArray: matriz com shape (n_amostras, n_components_) com os dados centralizados e projetados nos componentes principais.
+    """
     return self.fit(X).transform(X)
   
   
