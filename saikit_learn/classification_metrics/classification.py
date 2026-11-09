@@ -16,21 +16,32 @@ class ClassificationMetrics():
             pass
 
     def accuracy(self, matrix = True, normalize = None):
+        y_true = self.y_true
+        y_pred = self.y_pred
+        n = len(y_true)
+        l = len(self.labels)
         if matrix == False:
-            y_true = self.y_true
-            y_pred = self.y_pred
-            n = len(y_true)
             s = 0
             for i in range(n):
                 if y_true[i] == y_pred[i]:
                     s = s + 1
             if normalize == False:
                 return s
-            if normalize == True:
+            else:
                 return s / n
         else:
-            #confusion matrix
-            pass
+            matrix = np.zeros((l,l), dtype = int)
+            np.add.at(matrix, (y_true, y_pred), 1)
+            if normalize == "lines":
+                s = matrix.sum(axis = 1, keepdims = True)
+            elif normalize == "columns":
+                s = matrix.sum(axis = 0, keepdims = True)
+            elif normalize == False:
+                return matrix
+            else:
+                s = n
+            matrix = np.divide(matrix, s, out = np.zeros_like(matrix, dtype=float), where=np.asarray(s) != 0)
+            return matrix
 
     def loss(self, normalize = True, custom = False) -> float:
         if custom == True:
