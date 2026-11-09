@@ -1,3 +1,3 @@
-from preprocessing import StandardScaler, Pipeline
+from saikit_learn.preprocessing.preprocessing import StandardScaler, Pipeline
 
 __all__ = ["StandardScaler", "Pipeline"]
