@@ -92,7 +92,7 @@ def test_more_features_than_sample():
 def test_colinear_columns(data):
     X, y = data
     X_rd = np.column_stack([X, X[:, 0]])
-    with pytest.raises(np.linalg.LinAlgError):
+    with pytest.raises(ValueError):
         OLS().fit(X_rd, y)
 
 def test_predict_before_fit(data):

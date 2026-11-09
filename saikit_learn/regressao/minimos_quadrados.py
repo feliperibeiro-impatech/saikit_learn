@@ -30,9 +30,11 @@ class OLS:
         X, y =  verify_X_y(X, y)
         self.n_features_in_ = X.shape[1]
         X = self._design(X)
-
-        beta = np.linalg.solve(X.T @ X, X.T @ y)
-
+        try:
+            beta = np.linalg.solve(X.T @ X, X.T @ y)
+        except np.linalg.LinAlgError:
+            raise ValueError("X tem colunas linearmente dependentes; OLS não tem solução única.")
+        
         self.intercept_ = float(beta[0]) if self.intercepto else 0.0
         self.coef_ = beta[1:] if self.intercepto else beta
         self._fitted = True
@@ -47,15 +49,15 @@ class OLS:
         Returns:
             np.ndarray: Valores estimados pelo método, de tamanho (n_samples,).
         """  
-        X = verify_array(X)
-
         if not self._fitted:
             raise NotFittedError(
-                f'{self.__class__.__name__} não foi fittado ainda'
+                f'{self.__class__.__name__} não foi treinado ainda, chame fit.'
                 )
         
+        X = verify_array(X)
+
         if self.n_features_in_ != X.shape[1]:
             raise ValueError(
-                f'a dimensão das features distingu; necessário: {self.n_features_in_}; obtido: {X.shape[1]}'
+                f'a dimensão das features difere; necessário: {self.n_features_in_}; obtido: {X.shape[1]}'
                              )
         return X @ self.coef_ + self.intercept_
