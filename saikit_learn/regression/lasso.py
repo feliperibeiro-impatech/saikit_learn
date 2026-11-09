@@ -1,4 +1,4 @@
-from utils.validacao import verify_X_y, verify_array, NotFittedError
+from saikit_learn.regression.utils.validacao import verify_X_y, verify_array, NotFittedError
 import numpy as np
 
 class Lasso:
