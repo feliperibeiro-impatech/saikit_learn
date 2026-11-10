@@ -4,24 +4,24 @@ import numpy as np
 class PCA:
     """Análise dos Componentes Principais por meio da Matriz de Covariância"""
 
-    def __init__(self, n_components=None, proporcao=0.95):
+    def __init__(self, n_components=None, proportion=0.95):
         """Inicializa as instâncias do objeto da classe
 
         Args:
             n_components (int): número de componentes que se deseja projetar os dados. Defaults to None.
-            proporcao (float): proporção de variância expicada que se deseja usar. Defaults to 0.95.
+            proportion (float): proporção de variância explicada que se deseja usar. Defaults to 0.95.
         """
 
         # Parâmetros definidos pelo usuário
         self.n_components = n_components
-        self.proporcao = proporcao
+        self.proportion = proportion
 
         # Parâmetros aprendidos
         self.mean_ = None  # média dos dados
         self.n_features_inicial_ = None  # dimensão inicial (D)
         self.n_components_ = None  # número de componentes determinada pelo modelo (d)
         self.components_ = None  # componentes determinadas pela decomposição da matriz
-        self.eigenvalues_ = None  # autovalores da matriz de covariancia
+        self.eigenvalues_ = None  # autovalores da matriz de covariância
         self.explained_variance_ = None  # variância explicada
         self.explained_variance_ratio_ = None  # proporção de variância explicada
 
@@ -76,7 +76,7 @@ class PCA:
             int: menor número de componentes principais cuja variância explicada acumulada é maior
             ou igual a 'proporcao'.
         """
-        if not 0 < self.proporcao <= 1:
+        if not 0 < self.proportion <= 1:
             raise ValueError("A proporção deve pertencer ao intervalo (0,1]")
 
         if self.explained_variance_ratio_ is None:
@@ -86,16 +86,16 @@ class PCA:
 
         cumulative_sum = np.cumsum(self.explained_variance_ratio_)
 
-        return int(np.searchsorted(cumulative_sum, self.proporcao) + 1)
+        return int(np.searchsorted(cumulative_sum, self.proportion) + 1)
 
     def fit(self, X):
-        """Ajusta o PCA aos dados, calculando a média, os autovalores, os componentes principais e a variãncia explicada.
+        """Ajusta o PCA aos dados, calculando a média, os autovalores, os componentes principais e a variância explicada.
 
         Args:
             X (array-like): base de dados com shape (n_amostras, n_atributos).
 
         Raises:
-            ValueError: se 'proporcao' não estiver no intervalo (0, 1].
+            ValueError: se 'proportion' não estiver no intervalo (0, 1].
             ValueError: se 'n_components' não for None nem um inteiro.
             ValueError: se 'n_components' não estiver entre 1 e o número de atributos de 'X'.
             ValueError: se o cálculo da matriz de covariância produzir valores não finitos.
@@ -104,7 +104,7 @@ class PCA:
         Returns:
             PCA: a própria instância ajustada ('self')
         """
-        if not 0.0 < self.proporcao <= 1.0:
+        if not 0.0 < self.proportion <= 1.0:
             raise ValueError(
                 "A proporção de variância explicada deve estar no intervalo (0,1]"
             )
@@ -117,7 +117,7 @@ class PCA:
                 self.n_components, (int, np.integer)
             ):
                 raise ValueError(
-                    "O número de componentes deve ser um inteiro ou o atributo booleano None"
+                    "O número de componentes deve ser um inteiro ou o atributo booliano None"
                 )
 
             if not 1 <= self.n_components <= D:
@@ -221,7 +221,7 @@ class PCA:
     def plot_eigen_values(self, tol=0.05, show=True):
         """Plota o scree plot e sugere d pelo método do cotovelo.
 
-        O cotovelo é o in[icio do platô: o primeiro componente a partir do qual todas as quedas
+        O cotovelo é o inicio do platô: o primeiro componente a partir do qual todas as quedas
         entre autovalores consecutivos, relativas ao maior autovalor, são menores que 'tol'.
 
         Args:
@@ -258,7 +258,7 @@ class PCA:
         candidates = np.flatnonzero(maximum_fall < tol)
 
         if candidates.size == 0:
-            d = D  # sem cotovelo claro: mantpem todos os componentes
+            d = D  # sem cotovelo claro: mantém todos os componentes
         else:
             d = max(1, int(candidates[0]))
 

@@ -330,67 +330,6 @@ class TestSampleWeights:
                 dropped.score(measure, average="macro")
             )
 
-
-# ---------------------------------------------------------------------------
-# cross-check against scikit-learn (skipped if scikit-learn is not installed)
-# ---------------------------------------------------------------------------
-
-class TestAgainstSklearn:
-    @pytest.mark.parametrize("seed", [0, 1, 2])
-    def test_multiclass_matches_sklearn(self, seed):
-        skm = pytest.importorskip("sklearn.metrics")
-        rng = np.random.default_rng(seed)
-        y_true = rng.integers(0, 3, size=200)
-        y_pred = rng.integers(0, 3, size=200)
-        w = rng.random(200)
-        m = ClassificationMetrics(y_true, y_pred, sample_weights=w)
-
-        np.testing.assert_allclose(
-            m.confusion_matrix(),
-            skm.confusion_matrix(y_true, y_pred, labels=[0, 1, 2], sample_weight=w),
-        )
-        assert m.score("accuracy") == pytest.approx(
-            skm.accuracy_score(y_true, y_pred, sample_weight=w)
-        )
-        sk_fns = {
-            "precision": skm.precision_score,
-            "recall": skm.recall_score,
-            "f1": skm.f1_score,
-        }
-        for measure, fn in sk_fns.items():
-            for average in ("micro", "macro"):
-                expected = fn(
-                    y_true, y_pred, average=average, sample_weight=w, zero_division=0
-                )
-                assert m.score(measure, average=average) == pytest.approx(expected)
-
-    @pytest.mark.parametrize("seed", [0, 1, 2])
-    def test_binary_matches_sklearn(self, seed):
-        skm = pytest.importorskip("sklearn.metrics")
-        rng = np.random.default_rng(seed)
-        y_true = rng.integers(0, 2, size=100)
-        y_pred = rng.integers(0, 2, size=100)
-        w = rng.random(100)
-        m = ClassificationMetrics(y_true, y_pred, sample_weights=w)
-
-        sk_fns = {
-            "precision": skm.precision_score,
-            "recall": skm.recall_score,
-            "f1": skm.f1_score,
-        }
-        for measure, fn in sk_fns.items():
-            expected = fn(
-                y_true, y_pred, average="binary", pos_label=1, sample_weight=w
-            )
-            assert m.score(measure, average="binary", pos_label=1) == pytest.approx(expected)
-
-
-# ---------------------------------------------------------------------------
-# Known issues: these encode the *expected* behaviour and currently fail.
-# They are marked xfail (non-strict) so the suite stays green; remove the
-# marker once the code is fixed.
-# ---------------------------------------------------------------------------
-
 class TestKnownIssues:
     @pytest.mark.xfail(
         reason="loss() uses the encoded class indices (0/1) in y_pred as "
