@@ -7,7 +7,7 @@ def cross_validation(model, X, y, scoring, k=5, shuffle=True, random_state=None)
 
     Por padrão, as amostras são embaralhadas antes de serem divididas em folds,
     o que reduz folds com classes ausentes quando os dados estão ordenados por
-    classe. Use shuffle=False quando a ordem das amostras importar. O modelo
+    classe. Use shuffle=False quando a ordem das amostras importar (como em séries temporais). O modelo
     recebido é ajustado a cada fold e termina treinado no último deles.
 
     Args:
