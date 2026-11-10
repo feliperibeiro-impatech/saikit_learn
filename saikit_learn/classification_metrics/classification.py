@@ -2,6 +2,21 @@ import numpy as np
 
 class ClassificationMetrics():
     def __init__(self, y_true : np.ndarray, y_pred : np.ndarray, labels : list = None, sample_weights : np.ndarray = None):
+        """Iniciliza a classe classification metrics
+
+        Args:
+            y_true (np.ndarray): Classes corretas.
+            y_pred (np.ndarray): Classes previtas.
+            labels (list, opcional): Classes. Se não for fornecido induz de y_true e y_pred
+            sample_weights (np.ndarray, opcional): Pesos das amostras. Se não for fornecido padroniza para uma array de uns.
+
+        Raises:
+            ValueError: labels tem menos classes que y_true
+            ValueError: y_true ou y_pred tem mais de uma dimensão
+            ValueError: y_true e y_pred tem formatos diferentes
+            ValueError: sample_weights tem formato diferente de y_true
+            ValueError: sample_weigths tem pesos negativos
+        """
         if labels is None:
             labels = np.unique(np.concatenate((y_true, y_pred)))
         unknown = np.setdiff1d(np.concatenate((y_true, y_pred)), labels)
@@ -23,7 +38,15 @@ class ClassificationMetrics():
             raise ValueError("sample_weights não pode conter valores negativos.")
         self.sample_weights = sample_weights
 
-    def confusion_matrix(self, normalize = "None"):
+    def confusion_matrix(self, normalize = "None") -> np.ndarray:
+        """Gera a matriz de confusão
+
+        Args:
+            normalize (str, opcional): Define a normalização da matriz. Possíveis valores: "lines", "columns", "all". Se não for fornecido Não normaliza.
+
+        Returns:
+            np.ndarray: Matriz de confusão
+        """
         y_true = self.y_true
         y_pred = self.y_pred
         sample_weights = self.sample_weights
@@ -41,14 +64,31 @@ class ClassificationMetrics():
         matrix = np.divide(matrix, s, out = np.zeros_like(matrix, dtype=float), where=np.asarray(s) != 0)
         return matrix
 
-    def score(self, measure, average = "binary", pos_label = 1, normalize = True) -> float:
+    def score(self, measure : str, average = "binary", pos_label = 1, normalize = True) -> float:
+        """Pontua uma classificação
+
+        Args:
+            measure (str): Medida. Possíveis valores: "accuracy", "precision", "recall", "f1".
+            average (str, opcional): Média para classificações multivariadas. Possíveis valores: "micro", "macro". Se não for fornecida padroniza para classificação binária.
+            pos_label (int, opcional): índice da classe positiva. Padroniza para 1.
+            normalize (bool, opcional): Define a normalização da accuracy. Padroniza para True.
+
+        Raises:
+            ValueError: Medida inválida
+            ValueError: Média inválida
+            ValueError: Binary para multivariádas
+            TypeError: pos_labels não é indice de labels
+
+        Returns:
+            float: Pontuação
+        """
         y_true = self.y_true
         y_pred = self.y_pred
         sample_weights = self.sample_weights
         n = len(y_true)
         w = sample_weights.sum()
         if measure not in ("accuracy", "precision", "recall", "f1"):
-            raise ValueError
+            raise ValueError("Medida inválida")
         if measure == "accuracy":
                     s = 0
                     for i in range(n):
@@ -63,7 +103,7 @@ class ClassificationMetrics():
         fn = matrix.sum(axis = 1) - tp
         fp = matrix.sum(axis = 0) - tp
         if average not in ("binary", "micro", "macro"):
-            raise ValueError
+            raise ValueError("Média inválida")
         if average == "binary":
             if len(self.labels) != 2:
                 raise ValueError("average='binary' exige duas classes.")
@@ -94,21 +134,24 @@ class ClassificationMetrics():
             return 2 * tp / (2 * tp + fp + fn)
 
     def loss(self, normalize = True) -> float:
+        """Gera a pontuação log_loss
+
+        Args:
+            normalize (bool, opcional): Define a normalização. Padroniza para True.
+
+        Raises:
+            ValueError: y_prob não é uma probabilidade
+
+        Returns:
+            float: Pontuação
+        """
         y_true = self.y_true
         y_prob = self.y_pred
         if np.any((y_prob < 0) | (y_prob > 1)):
-            raise ValueError
+            raise ValueError("y_prob não é uma probabilidade")
         sample_weights = self.sample_weights
         loss = -np.sum(sample_weights * (y_true * np.log(y_prob) + (1 - y_true) * np.log(1 - y_prob)))
         if normalize:
             return loss / sample_weights.sum()
         else:
             return loss
-
-if __name__ == "__main__":
-    y_true = [0, 0, 1, 1]
-    loss = ClassificationMetrics(y_true, [0.25, 0.75, 0.25, 0.75])
-    print(loss.loss())
-    score = ClassificationMetrics(y_true, [0, 0, 0, 0], labels = [0, 1])
-    matrix = score.confusion_matrix()
-    print(matrix)
