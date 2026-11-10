@@ -3,10 +3,17 @@ from saikit_learn.resampling.cross_validation import cross_validation
 
 class GridSearchCV():
     def __init__(self, estimator, param_grid : dict, scoring, refit = True, cv = 5):
+        """Inicializa o grid search
+
+        Args:
+            estimator (func): Modelo a ter hiperparametros testados.
+            param_grid (dict): Grade de parametros a serem testados.
+            scoring (_type_): Métrica para decisão do melhor modelo.
+            refit (bool, optional): Define saída da função fit. Padroniza para True.
+            cv (int, optional): Número de folds. Padroniza para 5.
+        """
         keys = list(param_grid.keys())
         values = list(param_grid.values())
-        if len(values) == 0:
-            raise ValueError
         n_params = []
         param_grid = []
         for v in values:
@@ -22,7 +29,20 @@ class GridSearchCV():
         self.refit = refit
         self.cv = cv
 
-    def fit(self, x, y):
+    def fit(self, x : np.ndarray, y : np.ndarray):
+        """Treina os modelos e decide qual é o melhor.
+
+        Args:
+            x (np.ndarray): Atributos de entrada
+            y (np.ndarray): Valores alvo
+
+        Returns:
+            dict: Planilha de resultados
+            float: Pontuação do melhor modelo
+            int: índice do melhor modelo
+            dict: Parametros do melhor modelo
+            func: Modelo treinado ou não a depender de refit.
+        """
         estimator = self.estimator
         param_grid = self.param_grid
         k = self.cv
