@@ -86,6 +86,9 @@ class PCA:
 
         cumulative_sum = np.cumsum(self.explained_variance_ratio_)
 
+        if self.proportion == 1:
+            return len(self.explained_variance_ratio_)
+
         return int(np.searchsorted(cumulative_sum, self.proportion) + 1)
 
     def fit(self, X):
