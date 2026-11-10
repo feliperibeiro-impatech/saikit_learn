@@ -5,6 +5,8 @@ class GridSearchCV():
     def __init__(self, estimator, param_grid : dict, scoring, refit = True, cv = 5):
         keys = list(param_grid.keys())
         values = list(param_grid.values())
+        if len(values) == 0:
+            raise ValueError
         n_params = []
         param_grid = []
         for v in values:
